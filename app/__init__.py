@@ -1,3 +1,4 @@
+import os
 from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -11,8 +12,14 @@ login_manager.login_message_category = 'warning'
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.Config')
-    
+
+    # APP_ENV=production (ver deploy/gunicorn-pazsalvo.service) selecciona
+    # ProductionConfig; por defecto (desarrollo local sin variable puesta)
+    # usa DevelopmentConfig, que trae DEBUG=True.
+    from config import config_by_name
+    entorno = os.environ.get('APP_ENV', 'development')
+    app.config.from_object(config_by_name.get(entorno, config_by_name['development']))
+
     db.init_app(app)
     login_manager.init_app(app)
     

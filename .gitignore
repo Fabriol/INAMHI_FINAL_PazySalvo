@@ -1,0 +1,18 @@
+# Entorno / secretos
+.env
+venv/
+__pycache__/
+*.pyc
+
+# Archivos generados en tiempo de ejecución (no son código fuente; ambas
+# carpetas las crea la app sola con os.makedirs cuando hacen falta)
+app/static/temp/*.pdf
+app/static/firmas/
+
+# Logs de despliegue
+logs/
+*.sock
+
+# Editor / IDE
+.vscode/
+.claude/settings.local.json

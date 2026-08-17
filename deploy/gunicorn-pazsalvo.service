@@ -1,0 +1,36 @@
+[Unit]
+Description=Gunicorn - Sistema Paz y Salvo (INAMHI)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+
+# WorkingDirectory es crítico: parte del código (app/routes/firma.py,
+# app/routes/reportes.py) guarda archivos con rutas relativas
+# ("app/static/..."), así que el proceso DEBE arrancar con el CWD apuntando
+# a la raíz del proyecto o esos módulos escribirán en el lugar equivocado.
+WorkingDirectory=/opt/paz_salvo
+EnvironmentFile=/opt/paz_salvo/.env
+Environment="PATH=/opt/paz_salvo/venv/bin"
+
+ExecStart=/opt/paz_salvo/venv/bin/gunicorn \
+    --workers 3 \
+    --timeout 120 \
+    --bind unix:/opt/paz_salvo/paz_salvo.sock \
+    --access-logfile /opt/paz_salvo/logs/gunicorn_access.log \
+    --error-logfile /opt/paz_salvo/logs/gunicorn_error.log \
+    wsgi:app
+
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+
+# Endurecimiento básico: el proceso solo puede escribir dentro del proyecto.
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/opt/paz_salvo
+
+[Install]
+WantedBy=multi-user.target
