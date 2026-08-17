@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* =========================================
+       ESTILOS PREMIUM - PANEL DE ÁREAS
+       ========================================= */
+    .panel-creacion {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 24px 30px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    .panel-creacion::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+    }
+
+    .badge-modulo {
+        background: #10b981;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .panel-title {
+        font-weight: 900;
+        color: #0f172a;
+        margin: 0 0 5px 0;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+    }
+
+    .card-formulario {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .tabla-expedientes {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    .tabla-expedientes th {
+        background: #0f172a;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 16px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .tabla-expedientes td {
+        padding: 16px;
+        font-size: 0.85rem;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 600;
+    }
+
+    .tabla-expedientes tr:hover td {
+        background: #f8fafc;
+    }
+
+    /* Badges de Estado Dinámicos Modificados */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* Recién creados: Azul vibrante para que se diferencie rápido */
+    .status-creado {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+    }
+
+    /* En proceso: Naranja para advertir que faltan cosas */
+    .status-proceso {
+        background: #fffbeb;
+        color: #b45309;
+        border: 1px solid #fef3c7;
+    }
+
+    /* Completo: Verde de éxito */
+    .status-completo {
+        background: #ecfdf5;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    /* Negado: Rojo, para que se note que fue rechazado */
+    .status-negado {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    /* En revisión: Morado, distinto de "en progreso" para que se note que ya está al 100% */
+    .status-revision {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border: 1px solid #ddd6fe;
+    }
+
+    /* Botones de Acción Modificados */
+    .btn-action {
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 8px 12px;
+        transition: 0.3s;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-validar {
+        background: #1e3a8a;
+        color: white;
+        border: none;
+    }
+
+    .btn-validar:hover {
+        background: #2563eb;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
+
+    /* NUEVO BOTÓN VER MUY VISIBLE */
+    .btn-ver-destacado {
+        background: #f59e0b;
+        color: #0f172a;
+        border: none;
+        font-size: 0.8rem;
+        padding: 10px 16px;
+        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-ver-destacado:hover {
+        background: #d97706;
+        color: white;
+        transform: translateY(-2px);
+    }
+</style>
+
+{% if current_user.rol.nombre in ['Administrador', 'Talento Humano - Recepción Documentos'] %}
+<div class="mb-3 d-flex justify-content-end">
+    <a href="/areas/exportar_excel" class="btn btn-success fw-bold shadow-sm"
+        onclick="Swal.fire({ title: 'Generando Reporte...', text: 'Descargando base de datos.', icon: 'success', timer: 2000, showConfirmButton: false })">
+        <i class="bi bi-file-earmark-excel-fill me-2"></i> Exportar Todo a Excel
+    </a>
+</div>
+{% endif %}
+
+<div class="panel-creacion d-flex justify-content-between align-items-center">
+    <div>
+        <span class="badge-modulo">Bandeja de Entrada</span>
+        <h1 class="panel-title">Mis Tareas Pendientes</h1>
+        <p class="text-muted small m-0">Departamento actual: <strong>{{ current_user.rol.nombre }}</strong>. Valide los
+            requisitos de su área.</p>
+    </div>
+    <a href="/dashboard" class="btn btn-sm btn-outline-secondary fw-bold px-3 py-2" style="border-radius: 8px;">← Volver
+        al Panel</a>
+</div>
+
+<div class="card-formulario">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold m-0" style="color: #0f172a;"><i class="bi bi-inboxes-fill me-2 text-success"></i>Trámites en
+            Curso</h5>
+        <button onclick="window.location.reload();" class="btn btn-sm btn-light border fw-bold text-secondary"><i
+                class="bi bi-arrow-clockwise me-1"></i> Actualizar Bandeja</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="tabla-expedientes">
+            <thead>
+                <tr>
+                    <th width="10%">Nro.</th>
+                    <th width="30%" style="text-align: left;">Ex Funcionario</th>
+                    <th width="20%">Fecha de Inicio</th>
+                    <th width="20%">Estado</th>
+                    <th width="20%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes %}
+
+                <!-- LOGÍCA INTELIGENTE DE ESTADO (Con % de Avance real, en vivo desde BD) -->
+                {% set respondidas = solicitud.campos_respondidos %}
+                {% set porcentaje = solicitud.porcentaje_avance %}
+                {% set estado_actual = solicitud.estado|upper if solicitud.estado else '' %}
+
+                {% if estado_actual in ['COMPLETADO', 'APROBADO', 'FINALIZADO', 'CERRADO'] %}
+                    {% set txt_estado = '100% CULMINADO' %}
+                    {% set clase_estado = 'status-completo' %}
+                    {% set icon_estado = 'bi-check-circle-fill' %}
+
+                {% elif estado_actual == 'NEGADO' %}
+                    {% set txt_estado = 'NEGADO (Devuelto al Funcionario)' %}
+                    {% set clase_estado = 'status-negado' %}
+                    {% set icon_estado = 'bi-x-circle-fill' %}
+
+                {% elif estado_actual == 'EN REVISIÓN' %}
+                    <!-- Automático al llegar a 100%: listo para que RRHH decida, aún no es un veredicto -->
+                    {% set txt_estado = 'EN REVISIÓN (100% · Listo para Dictamen)' %}
+                    {% set clase_estado = 'status-revision' %}
+                    {% set icon_estado = 'bi-eye-fill' %}
+
+                {% elif respondidas > 0 %}
+                    <!-- Aquí está la magia: Te muestra el % real de avance -->
+                    {% set txt_estado = 'EN PROGRESO (' ~ porcentaje ~ '% · ' ~ respondidas ~ '/' ~ solicitud.campos_total ~ ')' %}
+                    {% set clase_estado = 'status-proceso' %}
+                    {% set icon_estado = 'bi-hourglass-split' %}
+
+                {% else %}
+                    {% set txt_estado = 'RECIÉN CREADO (0% Avance)' %}
+                    {% set clase_estado = 'status-creado' %}
+                    {% set icon_estado = 'bi-file-earmark-plus-fill' %}
+                {% endif %}
+
+                <tr>
+                    <td class="text-primary fw-bold fs-6">#{{ solicitud.id }}</td>
+
+                    <td style="text-align: left;">
+                        {% if solicitud.usuario_data %}
+                        <div class="text-uppercase fw-bold text-dark">{{ solicitud.usuario_data.apellidos }} {{
+                            solicitud.usuario_data.nombres }}</div>
+                        <div class="small text-muted">{{ solicitud.usuario_data.cedula }}</div>
+                        {% else %}
+                        <div class="text-danger small fw-bold">Dato No Vinculado</div>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="fw-bold">{{ solicitud.fecha_creacion.strftime('%d/%m/%y') }}</div>
+                        <div class="small text-muted">{{ solicitud.fecha_creacion.strftime('%I:%M %p') }}</div>
+                    </td>
+
+                    <td>
+                        <span class="status-badge {{ clase_estado }}">
+                            <i class="bi {{ icon_estado }} me-1"></i> {{ txt_estado }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="d-flex justify-content-center gap-2">
+                            <!-- BOTONES PARA EL ADMINISTRADOR Y RRHH (Poder Total) -->
+                            {% if current_user.rol.nombre in ['Administrador', 'Talento Humano - Recepción Documentos']
+                            %}
+
+                            <a href="/paz-salvo/espejo/{{ solicitud.id }}" class="btn btn-action btn-ver-destacado"
+                                title="Revisar avance">
+                                <i class="bi bi-eye-fill fs-5 me-1" style="vertical-align: middle;"></i> VER AVANCE
+                            </a>
+
+                            <a href="/paz-salvo/llenar/{{ solicitud.id }}" class="btn btn-action"
+                                style="background-color: #1e3a8a; color: white;" title="Delegar y Validar Formulario">
+                                <i class="bi bi-pencil-square fs-5 me-1" style="vertical-align: middle;"></i> GESTIONAR
+                            </a>
+
+                            <!-- Botón exclusivo para dar el estado de Aprobado/Negado -->
+                            <a href="/areas/responder/{{ solicitud.id }}" class="btn btn-action"
+                                style="background-color: #10b981; color: white;" title="Emitir Dictamen Final">
+                                <i class="bi bi-check-circle-fill fs-5 me-1" style="vertical-align: middle;"></i>
+                                DICTAMEN
+                            </a>
+
+                            <!-- Reintentar: solo aparece si el trámite fue Negado Y todavía no se reintentó -->
+                            {% if estado_actual == 'NEGADO' %}
+                                {% if solicitud.ya_reintentado %}
+                                <button type="button" class="btn btn-action" disabled
+                                    style="background-color: #e2e8f0; color: #94a3b8; cursor: not-allowed;"
+                                    title="Ya se generó un trámite nuevo para este ex funcionario">
+                                    <i class="bi bi-check2-circle fs-5 me-1" style="vertical-align: middle;"></i> YA REINTENTADO
+                                </button>
+                                {% else %}
+                                <form method="POST" action="/paz-salvo/reintentar/{{ solicitud.id }}" class="d-inline"
+                                    onsubmit="return confirm('¿Generar un nuevo trámite de Paz y Salvo para este ex funcionario? El trámite negado #{{ solicitud.id }} se conserva como historial.');">
+                                    <button type="submit" class="btn btn-action" style="background-color: #7c3aed; color: white;" title="Generar Nuevo Trámite">
+                                        <i class="bi bi-arrow-repeat fs-5 me-1" style="vertical-align: middle;"></i> REINTENTAR
+                                    </button>
+                                </form>
+                                {% endif %}
+                            {% endif %}
+
+                            <!-- BOTÓN ÚNICO PARA LAS DEMÁS ÁREAS (Vista Aislada) -->
+                            {% else %}
+                            <a href="/paz-salvo/mis-campos/{{ solicitud.id }}" class="btn btn-action"
+                                style="background-color: #0ea5e9; color: white;">
+                                <i class="bi bi-vector-pen fs-5 me-1" style="vertical-align: middle;"></i> VALIDAR MIS
+                                CAMPOS
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="text-muted mb-2"><i class="bi bi-check-circle text-success"
+                                style="font-size: 2rem;"></i></div>
+                        <h6 class="fw-bold text-dark">Su bandeja está limpia.</h6>
+                        <p class="small text-muted m-0">No hay trámites pendientes de validación para el departamento de
+                            {{ current_user.rol.nombre }}.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

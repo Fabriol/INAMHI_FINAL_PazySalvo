@@ -1,0 +1,794 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --blue-600: #2563eb;
+        --blue-900: #1e3a8a;
+        --red-500: #ef4444;
+        --red-600: #dc2626;
+        --slate-300: #cbd5e1;
+        --slate-500: #64748b;
+    }
+
+    .page-header {
+        background: rgba(255, 255, 255, .9);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        border-top: 4px solid var(--blue-600);
+    }
+
+    .doc-form-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    .doc-form-left {
+        background: #fff;
+        border: 2px solid var(--blue-900);
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 25px;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+
+    .input-group label {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--slate-500);
+        text-transform: uppercase;
+    }
+
+    .doc-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--slate-300);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .doc-input[type="email"] {
+        text-transform: none;
+    }
+
+    .doc-input:focus {
+        border-color: var(--blue-600);
+        outline: none;
+    }
+
+    .btn-firmaec {
+        background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        width: 100%;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .hoja-espejo-preview {
+        background: #e8edf8;
+        border-radius: 20px;
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .has-error .doc-input {
+        border-color: var(--red-500);
+        background: #fff5f5;
+    }
+
+    .error-msg {
+        font-size: 10px;
+        color: var(--red-600);
+        font-weight: 700;
+        display: none;
+        margin-top: 2px;
+    }
+
+    .has-error .error-msg {
+        display: block;
+    }
+</style>
+
+<div class="page fade-in">
+    <div class="page-header d-flex justify-content-between">
+        <div>
+            <span class="badge bg-primary mb-2">Trámite Institucional Único #{{ solicitud.id }}</span>
+            <h2 class="m-0 fw-bold text-dark">Mis Tareas Designadas</h2>
+            <p class="text-muted small m-0">Llene la información requerida. El sistema valida automáticamente su
+                formato.</p>
+        </div>
+        <div>
+            <a href="/areas/tareas" class="btn btn-secondary fw-bold"><i class="bi bi-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    <div class="doc-form-layout">
+        <div class="doc-form-left">
+            <h5 class="fw-bold mb-4" style="color: var(--blue-900);"><i class="bi bi-pencil-square me-2"></i> Llene los
+                siguientes campos:</h5>
+
+            <form id="formularioOficial" action="/paz-salvo/guardar/{{ solicitud.id }}" method="POST"
+                hx-post="/actualizar-espejo" hx-trigger="keyup changed delay:100ms, change" hx-target="#vista-espejo">
+                <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+
+                {% set dic_etiquetas = {
+                'nombres_apellidos': ['Nombres y Apellidos', 'text', 'soloLetras', '100'], 'cedula': ['Cédula', 'text',
+                'validarCedula', '10'],
+                'modalidad': ['Modalidad Laboral', 'select_modalidad'], 'fecha_ingreso': ['Fecha de Ingreso', 'date',
+                'validarFechas', ''],
+                'fecha_salida': ['Fecha de Salida', 'date', 'validarFechas', ''], 'direccion': ['Dirección', 'text', '',
+                '200'],
+                'numero_domicilio': ['Teléfono Fijo', 'text', 'validarConvencional', '9'], 'celular': ['Celular',
+                'text', 'validarCelular', '10'],
+                'emergencia': ['Contacto Emergencia', 'text', 'validarCelular', '10'], 'email1': ['Email Principal',
+                'email', 'validarEmail', '100'],
+                'email2': ['Email Alternativo', 'email', 'validarEmail', '100'], 'provincia': ['Provincia',
+                'select_provincia'],
+                'canton': ['Cantón', 'select_canton'], 'lugar_trabajo': ['Lugar de Trabajo', 'select_lugar'],
+                'grupo_ocupacional': ['Grupo Ocupacional', 'select_grupo'], 'unidad': ['Dirección / Unidad', 'text',
+                'validarUnidad', '100'],
+                'cargo': ['Cargo', 'text', '', '100'],
+
+                'tramites_informe': ['S/N Informe gestión', 'select'], 'tramites_quipux_cero': ['S/N QUIPUX cero',
+                'select'],
+                'tramites_nombre_resp1': ['Resp. Fila 1', 'text', 'soloLetras', '100'], 'tramites_r1': ['Firma PAdES 1',
+                'firma'],
+                'tramites_fe_presentacion': ['S/N Fe presentación', 'select'], 'tramites_claves_asignadas': ['S/N Claves
+                asignadas', 'select'],
+                'tramites_nombre_resp2': ['Resp. Fila 2', 'text', 'soloLetras', '100'], 'tramites_r2': ['Firma PAdES 2',
+                'firma'],
+                'tramites_losep': ['S/N Archivo LOSEP', 'select'], 'tramites_acta_claves': ['S/N Acta Claves',
+                'select'],
+                'tramites_nombre_resp3': ['Resp. Fila 3', 'text', 'soloLetras', '100'], 'tramites_r3': ['Firma PAdES 3',
+                'firma'],
+                'tramites_admin_contrato': ['S/N Admin. Contrato', 'select'], 'tramites_desc_contrato': ['Desc.
+                Contrato', 'text', '', '255'],
+                'tramites_memo': ['Memo Admin', 'text', '', '100'], 'tramites_jefe_inmediato': ['Nombre Jefe Inmediato',
+                'text', 'soloLetras', '100'],
+                'tramites_servidor_recibe': ['Servidor que Recibe', 'text', 'soloLetras', '100'], 'tramites_obs':
+                ['Observaciones', 'text', '', '255'],
+                'tramites_nombre_responsable': ['Nombre Jefe de Área', 'text', 'soloLetras', '100'], 'tramites_jefe':
+                ['Firma PAdES JEFE', 'firma'],
+
+                'admin_es_contrato': ['S/N Es Admin. de Contrato', 'select'],
+                'admin_informe': ['S/N Entrega informe', 'select'], 'admin_nombre_resp1': ['Resp. Informe', 'text',
+                'soloLetras', '100'], 'admin_r1': ['Firma Validación Informe', 'firma'],
+                'admin_bienes': ['S/N Bienes y muebles', 'select'], 'admin_valor_bienes': ['Valor Bienes $', 'text',
+                'soloMoneda', '15'], 'admin_acta_bienes': ['N° Acta Recepción', 'text', '', '100'],
+                'admin_nombre_resp2': ['Resp. Bienes', 'text', 'soloLetras', '100'], 'admin_r2': ['Firma Custodio
+                Bienes', 'firma'],
+                'admin_deducibles': ['S/N Deducibles', 'select'], 'admin_deducibles_valor': ['Valor Deducibles $',
+                'text', 'soloMoneda', '15'], 'admin_nombre_resp3': ['Resp. Deducibles', 'text', 'soloLetras', '100'],
+                'admin_r3': ['Firma Deducibles', 'firma'],
+                'admin_pasajes': ['S/N Pasajes justificar', 'select'], 'admin_pasajes_valor': ['Valor Pasajes $',
+                'text', 'soloMoneda', '15'], 'admin_nombre_resp4': ['Resp. Pasajes', 'text', 'soloLetras', '100'],
+                'admin_r4': ['Firma Liquidación Pasajes', 'firma'],
+                'admin_responsable': ['Director/a Administrativo', 'text', 'soloLetras', '100'], 'admin_dir': ['Firma
+                PAdES Director/a', 'firma'],
+
+                'tic_verificacion': ['S/N Verificación equipo', 'select'], 'tic_ip_fija': ['S/N Acceso IP', 'select'],
+                'tic_liberacion': ['S/N Liberación IP', 'select'], 'tic_obs1': ['Observación Equipo Informático',
+                'text', '', '255'],
+                'tic_nombre_resp1': ['Resp. Equipos', 'text', 'soloLetras', '100'], 'tic_r1': ['Firma Control Hardware',
+                'firma'],
+                'tic_backup': ['S/N Entrega backup', 'select'], 'tic_ruta_backup': ['Ruta Backup', 'text', '', '255'],
+                'tic_nombre_resp2': ['Resp. Backup', 'text', 'soloLetras', '100'], 'tic_r2': ['Firma Control Backup',
+                'firma'],
+                'tic_retiro_acceso': ['S/N Retiro accesos', 'select'], 'tic_cierre_correo': ['S/N Cierre Correo',
+                'select'], 'tic_esigef': ['S/N Cierre eSIGEF', 'select'],
+                'tic_quipux': ['S/N Cierre QUIPUX', 'select'], 'tic_spryn': ['S/N Cierre SPRYN', 'select'], 'tic_esbye':
+                ['S/N Cierre eSByE', 'select'],
+                'tic_nombre_resp3': ['Resp. Cuentas', 'text', 'soloLetras', '100'], 'tic_r3': ['Firma Cierre Cuentas',
+                'firma'],
+                'tic_tarjeta_cuentas': ['S/N Tarjeta Acceso', 'select'], 'tic_obs': ['Novedades TIC', 'text', '',
+                '255'],
+                'tic_nombre_resp4': ['Resp. Tarjeta', 'text', 'soloLetras', '100'], 'tic_r4': ['Firma Control Accesos',
+                'firma'],
+                'tic_responsable': ['Nombre Resp. TIC General', 'text', 'soloLetras', '100'], 'tic_r5': ['Firma Jefe
+                TIC', 'firma'],
+
+                'fin_saldos': ['S/N Saldos contables', 'select'], 'fin_saldos_valor': ['Valor Saldos $', 'text',
+                'soloMoneda', '15'], 'fin_obs1': ['Observación Saldos', 'text', '', '255'],
+                'fin_nombre_resp1': ['Resp. Saldos', 'text', 'soloLetras', '100'], 'fin_r1':
+                ['Firma Análisis Contable', 'firma'],
+                'fin_anticipo': ['S/N Anticipo sueldos', 'select'], 'fin_anticipo_valor': ['Valor Anticipo $', 'text',
+                'soloMoneda', '15'], 'fin_obs2': ['Observación Anticipos', 'text', '', '255'],
+                'fin_nombre_resp2': ['Resp. Anticipos', 'text', 'soloLetras', '100'], 'fin_r2':
+                ['Firma Tesorería', 'firma'],
+                'fin_recuperacion': ['S/N Recup. valores', 'select'], 'fin_recuperacion_valor': ['Valor Recup. $',
+                'text', 'soloMoneda', '15'], 'fin_obs3': ['Observación Recuperación', 'text', '', '255'],
+                'fin_nombre_resp3': ['Resp. Valores', 'text', 'soloLetras', '100'],
+                'fin_r3': ['Firma Recuperación', 'firma'],
+                'fin_devolucion': ['S/N Dev. muebles', 'select'], 'fin_devolucion_valor': ['Valor Devolución $', 'text',
+                'soloMoneda', '15'], 'fin_obs4': ['Observación Devolución', 'text', '', '255'],
+                'fin_nombre_resp4': ['Resp. Muebles', 'text', 'soloLetras', '100'], 'fin_r4':
+                ['Firma Ajustes Financieros', 'firma'],
+                'fin_director': ['Nombre Director/a Finan.', 'text', 'soloLetras', '100'], 'fin_dir': ['Firma PAdES
+                Director/a', 'firma'],
+
+                'seg_archivos': ['Análisis Archivos Digitales', 'select'], 'seg_entrega_copia': ['Copia Seguridad
+                Física', 'select'], 'seg_nombre_resp1': ['Analista Seguridad', 'text', 'soloLetras', '100'], 'seg_r1':
+                ['Firma Criptografía 1', 'firma'],
+                'seg_archivos_fisicos': ['Auditoría Archivos Físicos', 'select'], 'seg_verificacion_info': ['Cifrado
+                Dispositivos', 'select'], 'seg_nombre_resp2': ['Analista Seguridad', 'text', 'soloLetras', '100'],
+                'seg_r2': ['Firma Criptografía 2', 'firma'],
+                'seg_oficial': ['Oficial Seguridad de Información', 'text', 'soloLetras', '100'], 'seg_responsable':
+                ['Responsable Infraestructura', 'text', 'soloLetras', '100'], 'seg_oficial_sig': ['Firma Oficial EGSI',
+                'firma'],
+
+                'rrhh_capacitacion': ['S/N Capacitación', 'select'], 'rrhh_cursos_eval': ['Cursos Info', 'text', '',
+                '100'], 'rrhh_resp_capacitacion': ['Resp. Capacitación', 'text', 'soloLetras', '100'], 'rrhh_r1':
+                ['Firma Capacitación', 'firma'],
+                'rrhh_evaluacion': ['S/N Evaluación', 'select'], 'rrhh_resp_evaluacion': ['Resp. Evaluación', 'text',
+                'soloLetras', '100'], 'rrhh_r2': ['Firma Evaluación', 'firma'],
+                'rrhh_viajes': ['S/N Viajes', 'select'], 'rrhh_resp_viajes': ['Resp. Viajes', 'text', 'soloLetras',
+                '100'], 'rrhh_r3': ['Firma Viajes', 'firma'],
+                'rrhh_siith': ['S/N SIITH', 'select'], 'rrhh_resp_siith': ['Resp. SIITH', 'text', 'soloLetras', '100'],
+                'rrhh_r4': ['Firma SIITH', 'firma'],
+                'rrhh_vacaciones': ['Días Vacaciones', 'text', 'soloNumeros', '3'], 'rrhh_num_certificado':
+                ['Certificado N°', 'text', '', '50'], 'rrhh_resp_vacaciones': ['Resp. Vacaciones', 'text', 'soloLetras',
+                '100'], 'rrhh_r5': ['Firma Vacaciones', 'firma'],
+                'rrhh_juramentada': ['S/N Juramentada', 'select'], 'rrhh_num_declaracion': ['N° Declaración', 'text',
+                '', '100'], 'rrhh_resp_juramentada': ['Resp. Juramentada', 'text', 'soloLetras', '100'], 'rrhh_r6':
+                ['Firma Juramentada', 'firma'],
+                'rrhh_credencial': ['S/N Credencial', 'select'], 'rrhh_respaldo_cd': ['S/N Respaldo CD', 'select'],
+                'rrhh_resp_credencial2': ['Resp. Credencial', 'text',
+                'soloLetras', '100'], 'rrhh_r7': ['Firma Credencial', 'firma'],
+                'rrhh_acta_bienes': ['S/N Acta Bienes', 'select'], 'rrhh_ropa_trabajo': ['S/N Ropa de Trabajo', 'select'],
+                'rrhh_resp_acta': ['Resp. Acta', 'text',
+                'soloLetras', '100'], 'rrhh_r8': ['Firma Act. Bienes', 'firma'],
+                'rrhh_director': ['Nombre Director/a RRHH', 'text', 'soloLetras', '100'], 'rrhh_dir': ['Firma Dir.
+                RRHH', 'firma'],
+
+                'recepcion_fecha': ['Recepción: Fecha', 'date', '', ''], 'recepcion_hojas': ['Recepción: Hojas', 'text',
+                'soloNumeros', '3'], 'recepcion_servidor': ['Recepción: Servidor', 'text', 'soloLetras', '100'],
+                'recepcion_cargo': ['Recepción: Cargo', 'text', 'soloLetras', '100'], 'recepcion_r1': ['Firma
+                Recepción', 'firma'],
+                'cedula_firmante': ['Cédula Firmante', 'text', 'validarCedula', '10'], 'fecha_firma': ['Fecha
+                Ejecución', 'date', '', ''], 'servidor_saliente': ['Firma FINAL Servidor', 'firma']
+                } %}
+
+                {% for campo in campos_asignados %}
+                {% if dic_etiquetas.get(campo) %}
+                {% set label = dic_etiquetas[campo][0] %}
+                {% set tipo = dic_etiquetas[campo][1] %}
+
+                {% if tipo in ['text', 'email', 'date'] %}
+                {% set js_funcion = dic_etiquetas[campo][2] if dic_etiquetas[campo]|length > 2 else '' %}
+                {% set max_l = dic_etiquetas[campo][3] if dic_etiquetas[campo]|length > 3 else '' %}
+
+                <!-- STRING LIMPIO PARA EVITAR ERROR EN VS CODE -->
+                {% set oninput_str = "window.convertirMayusculas(this); window.limpiarObligatorio(this);" %}
+                {% if js_funcion %}
+                {% set oninput_str = oninput_str ~ " window." ~ js_funcion ~ "(this);" %}
+                {% endif %}
+
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <input type="{{ tipo }}" name="{{ campo }}" class="doc-input"
+                        value="{{ solicitud.ex_funcionario.cedula if campo in ['cedula', 'cedula_firmante'] else datos.get(campo, '') }}"
+                        {% if max_l %}maxlength="{{ max_l }}" {% endif %} {% if campo in campos_bloqueados %}{% if
+                        campo in ['nombres_apellidos', 'cedula', 'cedula_firmante'] %}readonly
+                        style="background:#e2e8f0;" {% else %}readonly disabled style="background:#e2e8f0;" {% endif
+                        %}{% endif %} {% if campo=='unidad' %}onblur="window.normalizarUnidad(this)" {% endif %}
+                        oninput="{{ oninput_str }}">
+                    <span class="error-msg" style="display:none;">⚠ Formato Incorrecto</span>
+                </div>
+                {% elif tipo == 'select' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" class="doc-input" onchange="window.quitarError(this)" {% if campo in
+                        campos_bloqueados %}disabled style="background:#e2e8f0;" {% endif %}>
+                        <option value="">—</option>
+                        <option value="SI" {% if datos.get(campo)=='SI' %}selected{% endif %}>SÍ</option>
+                        <option value="NO" {% if datos.get(campo)=='NO' %}selected{% endif %}>NO</option>
+                    </select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'select_provincia' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" id="provinciaSelect" data-selected="{{ datos.get(campo, '') }}"
+                        onchange="window.filtrarCantonesEcuador(); window.quitarError(this);" class="doc-input" {% if
+                        campo in campos_bloqueados %}disabled style="background:#e2e8f0;" {% endif %}></select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'select_canton' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" id="cantonSelect" data-selected="{{ datos.get(campo, '') }}"
+                        onchange="window.quitarError(this)" class="doc-input" {% if campo in campos_bloqueados
+                        %}disabled style="background:#e2e8f0;" {% endif %}></select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'select_modalidad' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" class="doc-input" onchange="window.quitarError(this)" {% if campo in
+                        campos_bloqueados %}disabled style="background:#e2e8f0;" {% endif %}>
+                        <option value="">Seleccione...</option>
+                        <option value="PERMANENTE" {% if datos.get(campo)=='PERMANENTE' %}selected{% endif %}>
+                            Nombramiento Permanente</option>
+                        <option value="PROVISIONAL" {% if datos.get(campo)=='PROVISIONAL' %}selected{% endif %}>
+                            Nombramiento Provisional</option>
+                        <option value="OCASIONAL" {% if datos.get(campo)=='OCASIONAL' %}selected{% endif %}>Contrato
+                            Ocasional</option>
+                        <option value="TRABAJO" {% if datos.get(campo)=='TRABAJO' %}selected{% endif %}>Contrato de
+                            Trabajo</option>
+                    </select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'select_lugar' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" class="doc-input" onchange="window.quitarError(this)" {% if campo in
+                        campos_bloqueados %}disabled style="background:#e2e8f0;" {% endif %}>
+                        <option value="">—</option>
+                        <option value="PLANTA CENTRAL" {% if datos.get(campo)=='PLANTA CENTRAL' %}selected{% endif %}>
+                            Planta Central</option>
+                        <option value="DESCONCENTRADO" {% if datos.get(campo)=='DESCONCENTRADO' %}selected{% endif %}>
+                            Procesos Desconcentrados</option>
+                    </select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'select_grupo' %}
+                <div class="input-group">
+                    <label>{{ label }}</label>
+                    <select name="{{ campo }}" class="doc-input" onchange="window.quitarError(this)" {% if campo in
+                        campos_bloqueados %}disabled style="background:#e2e8f0;" {% endif %}>
+                        <option value="">—</option>
+                        <option value="NJS" {% if datos.get(campo)=='NJS' %}selected{% endif %}>NJS (Jerárquico)
+                        </option>
+                        <option value="SRVS" {% if datos.get(campo)=='SRVS' %}selected{% endif %}>SRVS (Servicios)
+                        </option>
+                        <option value="SP" {% if datos.get(campo)=='SP' %}selected{% endif %}>SP (Servidor Público)
+                        </option>
+                        <option value="SPA" {% if datos.get(campo)=='SPA' %}selected{% endif %}>SPA (Apoyo)</option>
+                    </select>
+                    <span class="error-msg">⚠ Obligatorio</span>
+                </div>
+                {% elif tipo == 'firma' %}
+                <div class="p-3 mt-3 mb-4"
+                    style="background: #f8fafc; border: 2px dashed #93c5fd; text-align: center; border-radius: 8px;">
+                    <label style="font-weight: 900; color: #1e40af;">{{ label }}</label>
+                    <input type="hidden" name="{{ campo }}" id="input_{{ campo }}"
+                        value="{% if campo in campos_bloqueados %}FIRMADO{% endif %}">
+
+                    {% if campo in campos_bloqueados %}
+                    <div class="mt-2 text-success fw-bold"><i class="bi bi-check-circle-fill"></i> FIRMA APLICADA</div>
+                    {% else %}
+                    <button type="button" class="btn-firmaec" onclick="window.abrirModalFirmaEC('{{ campo }}')"><i
+                            class="bi bi-shield-lock-fill"></i> Estampar Firma PAdES</button>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </form>
+
+            {% if mis_campos_completo %}
+            <button type="button" class="btn btn-success fw-bold px-4 py-2" disabled
+                style="opacity: .65; cursor: not-allowed;">
+                <i class="bi bi-check-circle-fill me-2"></i> Ya Guardado
+            </button>
+            {% else %}
+            <button type="button" id="btnGuardarPrincipal" class="btn btn-success fw-bold px-4 py-2"
+                onclick="window.validarYGuardarTodo(this)">
+                <i class="bi bi-cloud-check-fill me-2"></i> Guardar Mis Respuestas
+            </button>
+            {% endif %}
+        </div>
+
+        <div class="hoja-espejo-preview">
+            <span class="badge bg-white text-primary px-3 py-2 shadow-sm mb-3 border border-primary fw-bold">
+                <span class="spinner-grow spinner-grow-sm text-primary me-2"></span>Espejo en Tiempo Real
+            </span>
+            <div id="vista-espejo"
+                style="background: white; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                {% include 'paz_salvo/partials/hoja_espejo.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let divisionPoliticaEcuador = {
+        "AZUAY": ["CAMILO PONCE ENRÍQUEZ", "CHORDELEG", "CUENCA", "EL PAN", "GIRÓN", "GUACHAPALA", "GUALACEO", "NABÓN", "OÑA", "PAUTE", "PUCARÁ", "SAN FERNANDO", "SANTA ISABEL", "SEVILLA DE ORO", "SIGSIG"],
+        "BOLÍVAR": ["CALUMA", "CHILLANES", "CHIMBO", "ECHEANDÍA", "GUARANDA", "LAS NAVES", "SAN MIGUEL"],
+        "CAÑAR": ["AZOGUES", "BIBLIÁN", "CAÑAR", "DÉLEG", "EL TAMBO", "LA TRONCAL", "SUSCAL"],
+        "CARCHI": ["BOLÍVAR", "ESPEJO", "MIRA", "MONTÚFAR", "SAN PEDRO DE HUACA", "TULCÁN"],
+        "CHIMBORAZO": ["ALAUSÍ", "CHAMBO", "CHUNCHI", "COLTA", "CUMANDÁ", "GUAMOTE", "GUANO", "PALLATANGA", "PENIPE", "RIOBAMBA"],
+        "COTOPAXI": ["LA MANÁ", "LATACUNGA", "PANGUA", "PUJILÍ", "SALCEDO", "SAQUISILÍ", "SIGCHOS"],
+        "EL ORO": ["ARENILLAS", "ATAHUALPA", "BALSAS", "CHILLA", "EL GUABO", "HUAQUILLAS", "LAS LAJAS", "MACHALA", "MARCABELÍ", "PASAJE", "PIÑAS", "PORTOVELO", "SANTA ROSA", "ZARUMA"],
+        "ESMERALDAS": ["ATACAMES", "ELOY ALFARO", "ESMERALDAS", "MUISNE", "QUININDÉ", "RIOVERDE", "SAN LORENZO"],
+        "GALÁPAGOS": ["ISABELA", "SAN CRISTÓBAL", "SANTA CRUZ"],
+        "GUAYAS": ["ALFREDO BAQUERIZO MORENO", "BALAO", "BALZAR", "COLIMES", "CORONEL MARCELINO MARIDUEÑA", "DAULE", "DURÁN", "EL EMPALME", "EL TRIUNFO", "GENERAL ANTONIO ELIZALDE", "GUAYAQUIL", "ISIDRO AYORA", "LOMAS DE SARGENTILLO", "MILAGRO", "NARANJAL", "NARANJITO", "NOBOL", "PALESTINA", "PEDRO CARBO", "PLAYAS", "SALITRE", "SAMBORONDÓN", "SANTA LUCÍA", "SIMÓN BOLÍVAR", "YAGUACHI"],
+        "IMBABURA": ["ANTONIO ANTE", "COTACACHI", "IBARRA", "OTAVALO", "PIMAMPIRO", "URCUQUÍ"],
+        "LOJA": ["CALVAS", "CATAMAYO", "CELICA", "CHAGUARPAMBA", "ESPÍNDOLA", "GONZANAMÁ", "LOJA", "MACARÁ", "OLMEDO", "PALTAS", "PINDAL", "PUYANGO", "QUILANGA", "SARAGURO", "SOZORANGA", "ZAPOTILLO"],
+        "LOS RÍOS": ["BABA", "BABAHOYO", "BUENA FE", "MOCACHE", "MONTALVO", "PALENQUE", "PUEBLOVIEJO", "QUEVEDO", "QUINSALOMA", "URDANETA", "VALENCIA", "VENTANAS", "VINCES"],
+        "MANABÍ": ["24 DE MAYO", "BOLÍVAR", "CHONE", "EL CARMEN", "FLAVIO ALFARO", "JAMA", "JARAMIJÓ", "JIPIJAPA", "JUNÍN", "MANTA", "MONTECRISTI", "OLMEDO", "PAJÁN", "PEDERNALES", "PICHINCHA", "PORTOVIEJO", "PUERTO LÓPEZ", "ROCAFUERTE", "SAN VICENTE", "SANTA ANA", "SUCRE", "TOSAGUA"],
+        "MORONA SANTIAGO": ["GUALAQUIZA", "HUAMBOYA", "LIMÓN INDANZA", "LOGROÑO", "MORONA", "PABLO SEXTO", "PALORA", "SAN JUAN BOSCO", "SANTIAGO", "SEVILLA DON BOSCO", "SUCÚA", "TAISHA", "TIWINTZA"],
+        "NAPO": ["ARCHIDONA", "CARLOS JULIO AROSEMENA TOLA", "EL CHACO", "QUIJOS", "TENA"],
+        "ORELLANA": ["AGUARICO", "FRANCISCO DE ORELLANA", "LA JOYA DE LOS SACHAS", "LORETO"],
+        "PASTAZA": ["ARAJUNO", "MERA", "PASTAZA", "SANTA CLARA"],
+        "PICHINCHA": ["CAYAMBE", "MEJÍA", "PEDRO MONCAYO", "PEDRO VICENTE MALDONADO", "PUERTO QUITO", "QUITO", "RUMIÑAHUI", "SAN MIGUEL DE LOS BANCOS"],
+        "SANTA ELENA": ["LA LIBERTAD", "SALINAS", "SANTA ELENA"],
+        "SANTO DOMINGO DE LOS TSÁCHILAS": ["LA CONCORDIA", "SANTO DOMINGO"],
+        "SUCUMBÍOS": ["CASCALES", "CUYABENO", "GONZALO PIZARRO", "LAGO AGRIO", "PUTUMAYO", "SHUSHUFINDI", "SUCUMBÍOS"],
+        "TUNGURAHUA": ["AMBATO", "BAÑOS DE AGUA SANTA", "CEVALLOS", "MOCHA", "PATATE", "QUERO", "SAN PEDRO DE PELILEO", "SANTIAGO DE PÍLLARO", "TISALEO"],
+        "ZAMORA CHINCHIPE": ["CENTINELA DEL CÓNDOR", "CHINCHIPE", "EL PANGUI", "NANGARITZA", "PALANDA", "PAQUISHA", "YACUAMBI", "YANTZAZA", "ZAMORA"]
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        let provSelect = document.getElementById('provinciaSelect');
+        if (provSelect) {
+            let selectedProv = provSelect.getAttribute('data-selected');
+            provSelect.innerHTML = '<option value="">Seleccione Provincia...</option>';
+            Object.keys(divisionPoliticaEcuador).forEach((prov) => {
+                let isSelected = (prov === selectedProv) ? 'selected' : '';
+                provSelect.innerHTML += `<option value="${prov}" ${isSelected}>${prov}</option>`;
+            });
+            window.filtrarCantonesEcuador();
+        }
+    });
+
+    window.filtrarCantonesEcuador = () => {
+        let provSelect = document.getElementById('provinciaSelect');
+        let cantSelect = document.getElementById('cantonSelect');
+        if (provSelect && cantSelect) {
+            let prov = provSelect.value;
+            let selectedCant = cantSelect.getAttribute('data-selected');
+            cantSelect.innerHTML = '<option value="">Seleccione Cantón...</option>';
+            if (divisionPoliticaEcuador[prov]) {
+                divisionPoliticaEcuador[prov].forEach((c) => {
+                    let isSelected = (c === selectedCant) ? 'selected' : '';
+                    cantSelect.innerHTML += `<option value="${c}" ${isSelected}>${c}</option>`;
+                });
+            }
+        }
+    };
+
+    // ==========================================
+    // MOTOR DE VALIDACIONES INTELIGENTE
+    // ==========================================
+    window.convertirMayusculas = (el) => { if (el.type !== 'email') el.value = el.value.toUpperCase(); };
+    window.limpiarObligatorio = (el) => { if (el.value.trim() !== '') { window.quitarError(el); } };
+
+    window.mostrarError = (el, msg) => {
+        let grp = el.closest('.input-group');
+        grp.classList.add('has-error');
+        let span = grp.querySelector('.error-msg');
+        if (span) { span.innerText = msg; span.style.display = 'block'; }
+    };
+
+    window.quitarError = (el) => {
+        let grp = el.closest('.input-group');
+        grp.classList.remove('has-error');
+        let span = grp.querySelector('.error-msg');
+        if (span) { span.style.display = 'none'; }
+    };
+
+    window.soloLetras = (el) => { if (/[^a-zA-ZÀ-ÿ\s]/.test(el.value)) { el.value = el.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, ''); window.mostrarError(el, '⚠ Solo letras permitidas.'); } else { window.quitarError(el); } };
+    window.soloNumeros = (el) => { if (/[^0-9]/.test(el.value)) { el.value = el.value.replace(/[^0-9]/g, ''); window.mostrarError(el, '⚠ Solo números permitidos.'); } else { window.quitarError(el); } };
+    window.validarConvencional = (el) => { el.value = el.value.replace(/[^0-9]/g, '').slice(0, 9); if (el.value.length > 0 && (el.value.length !== 9 || !el.value.startsWith('02'))) { window.mostrarError(el, '⚠ Debe iniciar con 02 y tener 9 dígitos en total.'); } else { window.quitarError(el); } };
+    window.validarCelular = (el) => { el.value = el.value.replace(/[^0-9]/g, ''); if (el.value.length > 0 && (el.value.length !== 10 || !el.value.startsWith('09'))) { window.mostrarError(el, '⚠ Inicia con 09 y tiene 10 dígitos.'); } else { window.quitarError(el); } };
+    window.soloMoneda = (el) => { if (/[^0-9.]/.test(el.value)) { el.value = el.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); window.mostrarError(el, '⚠ Formato de moneda inválido.'); } else { window.quitarError(el); } };
+    window.validarEmail = (el) => {
+        let re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (el.value && !re.test(el.value)) { window.mostrarError(el, '⚠ Correo electrónico inválido.'); } else { window.quitarError(el); }
+
+        let e1 = document.querySelector('input[name="email1"]');
+        let e2 = document.querySelector('input[name="email2"]');
+        if (e1 && e2) {
+            let iguales = e1.value.trim() !== '' && e1.value.trim().toLowerCase() === e2.value.trim().toLowerCase();
+            [e1, e2].forEach((campo) => {
+                if (iguales) {
+                    window.mostrarError(campo, '⚠ El correo principal y alternativo no pueden ser iguales.');
+                } else if (campo.value === '' || re.test(campo.value)) {
+                    window.quitarError(campo);
+                }
+            });
+        }
+    };
+
+    window.validarFechas = () => {
+        let ing = document.querySelector('input[name="fecha_ingreso"]');
+        let sal = document.querySelector('input[name="fecha_salida"]');
+        if (ing && sal && ing.value && sal.value && new Date(sal.value) <= new Date(ing.value)) {
+            window.mostrarError(sal, '⚠ Fecha salida debe ser mayor a ingreso.');
+        } else if (sal) { window.quitarError(sal); }
+    };
+
+    window.validarUnidad = (el) => {
+        if (el.value.includes('/')) {
+            window.quitarError(el);
+        } else if (el.value.trim() !== '') {
+            window.mostrarError(el, '⚠ Formato de subdivisión requerido: Área / Departamento (Ej: BLOQUE 1 / FINANZAS)');
+        } else {
+            window.quitarError(el);
+        }
+    };
+    window.normalizarUnidad = (el) => {
+        if (el.value.includes('/')) {
+            el.value = el.value.split('/').map((p) => p.trim()).filter((p) => p !== '').join(' / ');
+        }
+    };
+
+    window.validarCedula = (el) => {
+        el.value = el.value.replace(/[^0-9]/g, ''); let cedula = el.value;
+        if (cedula.length === 10) {
+            let suma = 0; let coef = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+            for (let i = 0; i < 9; i++) { let v = parseInt(cedula[i]) * coef[i]; if (v >= 10) v -= 9; suma += v; }
+            let dv = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+            if (dv !== parseInt(cedula[9])) { window.mostrarError(el, "⚠ Cédula Ecuatoriana inválida."); } else { window.quitarError(el); }
+        } else if (cedula.length > 0) { window.mostrarError(el, "⚠ Faltan dígitos (Son 10 obligatorios)."); } else { window.quitarError(el); }
+    };
+
+    // ==========================================
+    // SISTEMA DE FIRMA PAdES (AUTO-FOCUS + ENTER + DISEÑO PREMIUM)
+    // ==========================================
+    window.abrirModalFirmaEC = (campoFirma, labelFirma = 'Firma Institucional') => {
+        let form = document.getElementById('formularioOficial');
+        let requeridos = form.querySelectorAll('.doc-input:not([disabled]):not([readonly])');
+        let faltanDatos = false;
+
+        requeridos.forEach((el) => {
+            if (el.name === 'email2') { return; }
+            if (el.value.trim() === '') { window.mostrarError(el, '⚠ Obligatorio.'); faltanDatos = true; }
+        });
+
+        if (faltanDatos || document.querySelectorAll('.has-error').length > 0) {
+            Swal.fire('Complete los datos de texto', 'Primero llene todos los cuadros de texto asignados y luego proceda a firmar.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: '<h3 style="color: #1e3a8a; font-weight: 900; margin: 0;"><i class="bi bi-shield-lock-fill text-primary me-2"></i> Validación PAdES</h3>',
+            html: `
+                <div style="text-align: left; padding: 10px 0;">
+                    <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px; margin-bottom: 20px; border-radius: 8px; font-size: 13px; color: #1e3a8a;">
+                        <i class="bi bi-info-circle-fill me-2"></i> Cargue su certificado <b>.p12</b> o <b>.pfx</b>. El sistema estampará criptográficamente su firma.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 6px; display: block;">1. Archivo de Firma</label>
+                        <input type="file" id="swal-p12-file" accept=".p12,.pfx" class="form-control" style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 10px; background: #f8fafc; width: 100%;">
+                    </div>
+                    
+                    <div>
+                        <label style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 6px; display: block;">2. Contraseña del Certificado</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="swal-p12-pass" class="form-control" placeholder="••••••••••••••••" style="border-radius: 12px; padding: 12px 45px 12px 15px; border: 2px solid #e2e8f0; font-size: 14px; width: 100%;">
+                            <button type="button" id="swal-toggle-pass" style="position: absolute; right: 10px; background: none; border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; padding: 0 5px;">
+                                <i class="bi bi-eye-fill" id="swal-eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '<i class="bi bi-pen-fill me-2"></i> Estampar Firma',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                popup: 'rounded-4 shadow-lg',
+                confirmButton: 'btn btn-primary px-4 py-2 fw-bold shadow-sm rounded-pill',
+                cancelButton: 'btn btn-light px-4 py-2 fw-bold rounded-pill border'
+            },
+            didOpen: () => {
+                const passInput = document.getElementById('swal-p12-pass');
+                const fileInput = document.getElementById('swal-p12-file');
+                const toggleBtn = document.getElementById('swal-toggle-pass');
+                const eyeIcon = document.getElementById('swal-eye-icon');
+
+                // 1. Auto-enfoque: cuando subes el archivo, el cursor salta solo a la contraseña
+                fileInput.addEventListener('change', () => { passInput.focus(); });
+
+                // 2. El ojito para ver la contraseña
+                toggleBtn.addEventListener('click', () => {
+                    if (passInput.type === 'password') {
+                        passInput.type = 'text';
+                        eyeIcon.classList.replace('bi-eye-fill', 'bi-eye-slash-fill');
+                        eyeIcon.style.color = '#2563eb';
+                    } else {
+                        passInput.type = 'password';
+                        eyeIcon.classList.replace('bi-eye-slash-fill', 'bi-eye-fill');
+                        eyeIcon.style.color = '#64748b';
+                    }
+                    passInput.focus();
+                });
+
+                // 3. LA MAGIA DEL ENTER: Detecta si presionas Enter y firma sin usar el mouse
+                passInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Evita que se recargue la página
+                        Swal.clickConfirm(); // Hace clic invisible en "Estampar Firma"
+                    }
+                });
+            },
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                let fileInput = document.getElementById('swal-p12-file').files[0];
+                let passInput = document.getElementById('swal-p12-pass').value;
+
+                if (!fileInput || !passInput) {
+                    Swal.showValidationMessage('⚠️ Adjunte su archivo .p12 y escriba la contraseña.');
+                    return false;
+                }
+
+                let formPayload = new FormData(form);
+                try { await fetch(form.action, { method: 'POST', body: formPayload }); } catch (e) { }
+
+                let formData = new FormData();
+                formData.append('pdf_firmado', fileInput);
+                formData.append('password', passInput);
+                formData.append('campo', campoFirma);
+
+                return fetch(`/paz-salvo/firmar-pades/{{ solicitud.id }}`, { method: 'POST', body: formData })
+                    .then((response) => {
+                        if (!response.ok) { return response.json().then((err) => { throw new Error(err.mensaje || 'Error al procesar.'); }); }
+                        return response.json();
+                    })
+                    .catch((error) => { Swal.showValidationMessage(`❌ ${error.message}`); });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({ title: '¡Firma Exitosa!', text: `La firma ha sido inyectada legalmente.`, icon: 'success', confirmButtonColor: '#16a34a' }).then(() => {
+                    window.location.reload();
+                });
+            }
+        });
+    };
+
+    // ==========================================
+    // SISTEMA DE GUARDADO INVISIBLE BLINDADO (AJAX)
+    // ==========================================
+    window.validarYGuardarTodo = (btnContext) => {
+        // Freno de mano automático (por si el botón intenta actuar como submit)
+        if (typeof event !== 'undefined') { event.preventDefault(); }
+
+        let form = document.getElementById('formularioOficial');
+        let requeridos = form.querySelectorAll('.doc-input:not([disabled]):not([readonly])');
+        let firmas = form.querySelectorAll('input[type="hidden"][id^="input_"]');
+        let valido = true;
+
+        requeridos.forEach((el) => {
+            if (el.name === 'email2') { return; }
+            if (el.value.trim() === '') { window.mostrarError(el, '⚠ Obligatorio.'); valido = false; }
+        });
+
+        firmas.forEach((el) => {
+            if (el.value !== 'FIRMADO') {
+                valido = false;
+                let cajaFirma = el.closest('div.p-3');
+                if (cajaFirma) {
+                    cajaFirma.style.borderColor = '#ef4444';
+                    cajaFirma.style.backgroundColor = '#fef2f2';
+                }
+            }
+        });
+
+        if (!valido || document.querySelectorAll('.has-error').length > 0) {
+            Swal.fire('Trámite Incompleto', 'Debe llenar todos los campos habilitados y estampar TODAS las firmas antes de sellar su asignación.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Sellar Trámite?',
+            text: 'Se bloquearán los campos y la información quedará guardada de forma irreversible.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="bi bi-shield-lock-fill me-2"></i> Sí, Guardar y Sellar',
+            confirmButtonColor: '#16a34a',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                // 1. Bloqueamos el botón INMEDIATAMENTE para evitar dobles clics
+                if (btnContext) {
+                    btnContext.disabled = true;
+                    btnContext.innerHTML = '<span class="spinner-grow spinner-grow-sm me-2"></span> Sellando información...';
+                    btnContext.classList.replace('btn-success', 'btn-secondary');
+                }
+
+                Swal.fire({ title: 'Guardando de forma segura...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+
+                try {
+                    let formData = new FormData(form);
+
+                    // 2. Enviamos los datos a Python de forma 100% invisible
+                    let response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // 3. Bloqueamos todos los cuadros de texto visualmente
+                        requeridos.forEach(el => {
+                            el.setAttribute('readonly', true);
+                            el.style.backgroundColor = '#e2e8f0';
+                            el.style.pointerEvents = 'none';
+                            el.style.color = '#64748b';
+                            el.style.border = '1px solid #cbd5e1';
+                        });
+
+                        // 4. Transformamos el botón en un candado gris
+                        if (btnContext) {
+                            btnContext.innerHTML = '<i class="bi bi-lock-fill me-2"></i> Trámite Sellado y Bloqueado';
+                            btnContext.style.cursor = 'not-allowed';
+                        }
+
+                        // 5. Mensaje de éxito sin recargar nada
+                        Swal.fire({
+                            title: '¡Guardado Exitoso!',
+                            text: 'La información ha sido sellada y registrada en auditoría.',
+                            icon: 'success',
+                            confirmButtonColor: '#1e3a8a'
+                        });
+
+                    } else {
+                        throw new Error('El servidor rechazó el guardado.');
+                    }
+
+                } catch (error) {
+                    Swal.fire('Error de conexión', 'Hubo un problema de red al intentar guardar.', 'error');
+                    // Si falla, reactivamos el botón para que pueda intentar de nuevo
+                    if (btnContext) {
+                        btnContext.disabled = false;
+                        btnContext.innerHTML = '<i class="bi bi-cloud-check-fill me-2"></i> Guardar Mis Respuestas';
+                        btnContext.classList.replace('btn-secondary', 'btn-success');
+                    }
+                }
+            }
+        });
+    };
+
+    // ==========================================
+    // AUTO-BLOQUEO PERMANENTE AL CARGAR LA PÁGINA
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+        let form = document.getElementById('formularioOficial');
+        let btnGuardar = document.getElementById('btnGuardarPrincipal');
+
+        if (form && btnGuardar) {
+            // El sistema escanea si te queda algún cuadro de texto libre para escribir
+            let inputsLibres = form.querySelectorAll('.doc-input:not([disabled]):not([readonly]):not([type="hidden"])');
+
+            // El sistema escanea si te queda algún botón azul de "Firmar PAdES" activo
+            let botonesFirmaLibres = form.querySelectorAll('.btn-firmaec');
+
+            // Si ambos están en CERO, significa que ya llenaste y firmaste TODO tu trabajo.
+            if (inputsLibres.length === 0 && botonesFirmaLibres.length === 0) {
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="bi bi-lock-fill me-2"></i> Trámite Sellado y Completado';
+                btnGuardar.classList.remove('btn-success');
+                btnGuardar.classList.add('btn-secondary');
+                btnGuardar.style.cursor = 'not-allowed';
+                btnGuardar.style.opacity = '0.8';
+            }
+        }
+    });
+</script>
+{% endblock %}

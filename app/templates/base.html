@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INAMHI - Sistema de Gestión Institucional</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            /* Fondo un poco más claro y limpio */
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           1. SIDEBAR AUTOMÁTICO PREMIUM
+           ========================================= */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 90px;
+            background: linear-gradient(180deg, #020617 0%, #0f172a 60%, #020617 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 12px;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 1050;
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+            overflow-x: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar:hover {
+            width: 290px;
+            padding: 25px 20px;
+            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* =========================================
+           ZONA DEL LOGO: LA CÁPSULA INTELIGENTE
+           ========================================= */
+        .brand-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            height: 80px;
+        }
+
+        .logo-capsule {
+            background: #ffffff;
+            border-radius: 16px;
+            height: 60px;
+            width: 100%;
+            max-width: 60px;
+            /* Tamaño cuando está cerrado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease, border-radius 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+            margin: 0 auto;
+        }
+
+        .sidebar:hover .logo-capsule {
+            max-width: 240px;
+            /* Tamaño cuando se abre */
+            padding: 12px 20px;
+            border-radius: 20px;
+        }
+
+        .sidebar-logo {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: all 0.4s ease;
+        }
+
+        /* =========================================
+           ENLACES DE NAVEGACIÓN
+           ========================================= */
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #94a3b8;
+            padding: 14px 0;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .sidebar:hover nav a {
+            padding: 14px 18px;
+        }
+
+        .sidebar nav a i {
+            font-size: 22px;
+            min-width: 65px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar:hover nav a i {
+            min-width: 35px;
+            text-align: left;
+        }
+
+        .sidebar nav a span {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar:hover nav a span {
+            opacity: 1;
+            transition: opacity 0.4s ease 0.1s;
+        }
+
+        /* Efecto Hover */
+        .sidebar nav a:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: white;
+        }
+
+        .sidebar nav a:hover i {
+            transform: scale(1.15);
+            color: #38bdf8;
+        }
+
+        /* Efecto Activo (Pantalla Actual) */
+        .sidebar nav a.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.15) 0%, transparent 100%);
+            color: white;
+            border-left: 4px solid #38bdf8;
+            border-radius: 12px;
+        }
+
+        .sidebar nav a.active i {
+            color: #38bdf8;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .nav-titulo {
+            margin: 20px 0 5px 10px;
+            font-size: 10px;
+            color: #475569;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar:hover .nav-titulo {
+            opacity: 1;
+            transition: opacity 0.4s ease 0.1s;
+        }
+
+        /* Perfil y Botón de Salida */
+        .user-profile {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 20px;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(153, 27, 27, 0.1));
+            color: #fca5a5 !important;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-logout:hover {
+            background: #ef4444 !important;
+            color: white !important;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            border-color: transparent;
+        }
+
+        .btn-logout:hover i {
+            color: white !important;
+        }
+
+        /* =========================================
+           2. CONTENEDOR PRINCIPAL ESTÁTICO
+           ========================================= */
+        .main-content {
+            margin-left: 90px;
+            width: calc(100% - 90px);
+            min-height: 100vh;
+            padding: 35px 45px;
+            transition: margin-left 0.4s ease;
+        }
+
+        /* Alertas Flotantes (Toasts) */
+        .flash-container {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1060;
+            min-width: 320px;
+            pointer-events: none;
+            /* Para que no bloquee clics detrás */
+        }
+
+        .alert-custom {
+            pointer-events: auto;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            display: flex;
+            align-items: center;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    {% if current_user.is_authenticated %}
+
+    <aside class="sidebar">
+
+        <!-- ===================================== -->
+        <!-- ZONA DEL LOGO: LA CÁPSULA INTELIGENTE -->
+        <!-- ===================================== -->
+        <div class="brand-box">
+            <div class="logo-capsule">
+                <img src="/static/img/inamhi.png" alt="Logo INAMHI" class="sidebar-logo">
+            </div>
+        </div>
+
+        <nav>
+            <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i><span>Dashboard Principal</span>
+            </a>
+
+            {% if current_user.rol.nombre == 'Administrador' %}
+            <a href="/paz-salvo/nueva" class="{% if 'nueva' in request.path %}active{% endif %}">
+                <i class="bi bi-file-earmark-plus-fill"></i><span>Nuevo Paz y Salvo</span>
+            </a>
+            <a href="/areas/tareas" class="{% if 'areas' in request.path %}active{% endif %}">
+                <i class="bi bi-folder-fill"></i><span>Control de Documentos</span>
+            </a>
+
+            <div class="nav-titulo">Administración</div>
+
+            <a href="/admin/auditoria" class="{% if 'auditoria' in request.path %}active{% endif %}">
+                <i class="bi bi-shield-lock-fill"></i><span>Auditoría del Sistema</span>
+            </a>
+            <a href="/usuarios" class="{% if 'usuarios' in request.path %}active{% endif %}">
+                <i class="bi bi-people-fill"></i><span>Gestión de Usuarios</span>
+            </a>
+
+            {% elif current_user.rol.nombre == 'Talento Humano - Recepción Documentos' %}
+            <a href="/areas/tareas" class="{% if 'areas' in request.path %}active{% endif %}">
+                <i class="bi bi-folder-fill"></i><span>Control de Documentos</span>
+            </a>
+
+            {% elif current_user.rol.nombre == 'Ex Funcionario' and tramite_negado_actual %}
+            <!-- Su trámite fue Negado: ya no puede seguir usando "Mis Formularios",
+                 solo le queda el Dashboard (con la alerta y el motivo del rechazo) -->
+
+            {% else %}
+            <a href="/areas/tareas" class="{% if 'areas' in request.path %}active{% endif %}">
+                <i class="bi bi-ui-checks-grid"></i><span>Mis Formularios</span>
+            </a>
+            {% endif %}
+
+            <div class="user-profile">
+                <a href="/logout" class="btn-logout">
+                    <i class="bi bi-power text-danger"></i><span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- ===================================== -->
+        <!-- ALERTAS FLOTANTES MEJORADAS           -->
+        <!-- ===================================== -->
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+
+            {% set bg_color = 'bg-primary text-white' %}
+            {% set icon = 'bi-info-circle-fill' %}
+
+            {% if category == 'success' %}
+            {% set bg_color = 'bg-success text-white' %}
+            {% set icon = 'bi-check-circle-fill' %}
+            {% elif category == 'danger' or category == 'error' %}
+            {% set bg_color = 'bg-danger text-white' %}
+            {% set icon = 'bi-exclamation-octagon-fill' %}
+            {% elif category == 'warning' %}
+            {% set bg_color = 'bg-warning text-dark' %}
+            {% set icon = 'bi-exclamation-triangle-fill' %}
+            {% endif %}
+
+            <div class="alert alert-custom alert-dismissible fade show {{ bg_color }}" role="alert">
+                <i class="bi {{ icon }} me-3" style="font-size: 1.3rem;"></i>
+                <div style="margin-top: 2px;">{{ message }}</div>
+                <button type="button" class="btn-close {% if category != 'warning' %}btn-close-white{% endif %}"
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- AQUÍ SE INYECTAN TODAS LAS VISTAS (INDEX, TAREAS, ETC) -->
+        {% block content %}{% endblock %}
+
+    </main>
+
+    {% else %}
+    <!-- SI NO ESTÁ LOGUEADO, MUESTRA EL LOGIN DIRECTO -->
+    {% block login %}{% endblock %}
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Auto-cerrar alertas después de 5 segundos -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                var alerts = document.querySelectorAll('.alert-custom');
+                alerts.forEach(function (alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>
