@@ -275,6 +275,15 @@
             page-break-after: auto;
         }
 
+        /* WeasyPrint (la versión que usa este proyecto) ignora box-shadow
+           por completo — no lo rasteriza ni lo dibuja, así que esta regla no
+           cambia el resultado del PDF. Se deja de todos modos por
+           consistencia con .ep-doc (arriba) y como defensa a futuro si algún
+           día se actualiza WeasyPrint a una versión que sí lo implemente. */
+        .firmaec-sello {
+            box-shadow: none !important;
+        }
+
         .ep-tabla tr {
             page-break-inside: avoid !important;
         }
@@ -747,10 +756,19 @@
     definitiva de haberes.
 </div>
 <div style="text-align: center; margin-top: 5px; background: #faf5ff; padding-bottom: 10px;">
-    <div id="espejo_firma_servidor_saliente" style="width: 175px; margin: 0 auto; display: flex; justify-content: center;">
+    <!-- width/height fijos + overflow:hidden a propósito: deben caber DENTRO
+         del rectángulo que subir_firma_pades() cubre con fondo blanco al
+         estampar la firma real (ver _SELLO_ANCHO_POR_CAMPO['servidor_saliente']
+         y _SELLO_ALTO en app/routes/paz_salvo.py — 128pt x 42pt, aquí unos
+         puntos más chico a propósito como margen de seguridad). Si este
+         placeholder pudiera crecer más alto que eso (como pasaba antes, sin
+         altura fija, cuando el texto envolvía a 2-3 líneas), el sobrante -
+         borde punteado incluido - queda asomando por debajo del sello real
+         una vez firmado: eso es lo que se veía "como imagen" garabateada. -->
+    <div id="espejo_firma_servidor_saliente" style="width: 165px; height: 50px; margin: 0 auto; display: flex; justify-content: center; align-items: center; overflow: hidden;">
         {% if dat.get('servidor_saliente') == 'FIRMADO' %}
         <div class="firmaec-sello"
-            style="max-width: 100%; border: 1.5px solid #000; box-shadow: 3px 3px 0px rgba(76, 29, 149, 0.2); padding: 4px;">
+            style="max-width: 100%; max-height: 100%; border: 1.5px solid #000; padding: 4px; overflow: hidden; box-sizing: border-box;">
             {{ generar_qr_svg(dat.get('servidor_saliente_nombre')) | safe }}
             <div class="firmaec-text-col">
                 <span class="firmaec-label-top" style="font-size: 5.5px;">Validar únicamente en FirmaEC.</span>
@@ -761,7 +779,7 @@
         </div>
         {% else %}
         <span
-            style="color: #6d28d9; font-style: italic; font-weight: 800; border: 1.5px dashed #a78bfa; padding: 6px; width: 100%; display: block; border-radius: 4px; background: #fff;">[
+            style="color: #6d28d9; font-style: italic; font-weight: 800; font-size: 6.5px; border: 1.5px dashed #a78bfa; padding: 4px; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 4px; background: #fff; overflow: hidden; box-sizing: border-box;">[
             FirmaEC PAdES — Servidor Saliente ]</span>
         {% endif %}
     </div>
