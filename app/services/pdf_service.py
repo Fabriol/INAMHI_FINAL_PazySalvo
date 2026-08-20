@@ -7,7 +7,16 @@ from weasyprint import HTML, CSS  # pyrefly: ignore [missing-import]
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter  # pyrefly: ignore [missing-import]
 from pyhanko.pdf_utils import generic  # pyrefly: ignore [missing-import]
 
-_MARGEN_PDF_PT = 24
+# Margen físico de la página @page (ver más abajo, en el CSS de
+# generar_documento_paz_salvo): 13mm = los 8mm originales + 0.5cm pedidos.
+# Se define en pt (unidad nativa del PDF) a partir de mm para que
+# _ancho_campo() use exactamente el mismo borde derecho real de la página
+# que WeasyPrint, sin desincronizarse si alguno de los dos valores cambia
+# suelto. app/routes/paz_salvo.py tiene su propia copia de esta cuenta
+# (_MARGEN_PAGINA_PT) para el sello de firma — si cambias el margen aquí,
+# cambia también el mm ahí.
+_MARGEN_PDF_MM = 13
+_MARGEN_PDF_PT = _MARGEN_PDF_MM * 72 / 25.4
 _ALTO_CAMPO_EDITABLE_PT = 10
 _TAM_FUENTE_MIN_PT = 4.5
 
@@ -25,7 +34,8 @@ CAMPOS_ANCHO_COMPLETO = {
     'lugar_trabajo', 'grupo_ocupacional', 'unidad', 'cargo',
     'tramites_nombre_resp1', 'tramites_nombre_resp2', 'tramites_nombre_resp3', 'tramites_nombre_responsable',
     'tramites_admin_contrato', 'tramites_desc_contrato', 'tramites_memo',
-    'tramites_jefe_inmediato', 'tramites_servidor_recibe', 'tramites_obs',
+    'tramites_jefe_inmediato', 'tramites_jefe_inmediato_cargo',
+    'tramites_servidor_recibe', 'tramites_servidor_recibe_cargo', 'tramites_obs',
     'admin_nombre_resp1', 'admin_nombre_resp2', 'admin_nombre_resp3', 'admin_nombre_resp4', 'admin_responsable',
     'admin_es_contrato', 'admin_valor_bienes', 'admin_acta_bienes', 'admin_deducibles_valor', 'admin_pasajes_valor',
     'tic_nombre_resp1', 'tic_nombre_resp2', 'tic_nombre_resp3', 'tic_nombre_resp4', 'tic_responsable',
@@ -704,7 +714,7 @@ def generar_documento_paz_salvo(solicitud, ex_funcionario, respuestas_db, ruta_s
     # incremental — momento en el que su propia apariencia pinta un fondo
     # blanco y el valor nuevo encima (ver actualizar_campo_pdf_incremental).
     estilos_base = CSS(string=f'''
-        @page {{ size: A4 portrait; margin: 8mm; }}
+        @page {{ size: A4 portrait; margin: {_MARGEN_PDF_MM}mm; }}
         body {{ font-family: Arial, sans-serif; background: #fff; margin: 0; padding: 0; }}
         * {{ -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }}
         .ep-tabla tr {{ page-break-inside: avoid; }}

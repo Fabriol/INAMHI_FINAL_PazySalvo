@@ -193,7 +193,7 @@
     @media print {
         @page {
             size: A4 portrait;
-            margin: 10mm;
+            margin: 15mm;
         }
 
         body,
@@ -503,8 +503,14 @@
                                                 value="tramites_jefe_inmediato" class="form-check-input me-1"> Nombre
                                             Jefe Inmediato</div>
                                         <div class="col-md-3 mb-2"><input type="checkbox" name="campos"
+                                                value="tramites_jefe_inmediato_cargo" class="form-check-input me-1">
+                                            Cargo Jefe Inmediato</div>
+                                        <div class="col-md-3 mb-2"><input type="checkbox" name="campos"
                                                 value="tramites_servidor_recibe" class="form-check-input me-1"> Servidor
                                             que Recibe</div>
+                                        <div class="col-md-3 mb-2"><input type="checkbox" name="campos"
+                                                value="tramites_servidor_recibe_cargo" class="form-check-input me-1">
+                                            Cargo Servidor que Recibe</div>
                                         <div class="col-md-3 mb-2"><input type="checkbox" name="campos"
                                                 value="tramites_obs" class="form-check-input me-1"> Observaciones</div>
                                         <div class="col-md-3 mb-2"><input type="checkbox" name="campos"
@@ -1104,7 +1110,8 @@
                 'tramites_fe_presentacion', 'tramites_claves_asignadas', 'tramites_nombre_resp2', 'tramites_r2',
                 'tramites_losep', 'tramites_acta_claves', 'tramites_nombre_resp3', 'tramites_r3',
                 'tramites_admin_contrato', 'tramites_desc_contrato', 'tramites_memo', 'tramites_jefe_inmediato',
-                'tramites_servidor_recibe', 'tramites_obs', 'tramites_nombre_responsable', 'tramites_jefe'] %}
+                'tramites_jefe_inmediato_cargo', 'tramites_servidor_recibe', 'tramites_servidor_recibe_cargo',
+                'tramites_obs', 'tramites_nombre_responsable', 'tramites_jefe'] %}
                 {% if c in asignados %}{% set s3_show.val = true %}{% endif %}
                 {% endfor %}
 
@@ -1145,10 +1152,14 @@
                     {{ input_text('tramites_memo', 'N° Memorando de Relevo', 'text', 'span-2', '100', '',
                     datos.get('tramites_memo', '')) }}
 
-                    {{ input_text('tramites_jefe_inmediato', 'Nombre del Jefe Inmediato', 'text', 'span-2', '100',
+                    {{ input_text('tramites_jefe_inmediato', 'Nombre del Jefe Inmediato', 'text', '', '100',
                     'soloLetras', datos.get('tramites_jefe_inmediato', '')) }}
-                    {{ input_text('tramites_servidor_recibe', 'Servidor que recibe custodia', 'text', 'span-2', '100',
+                    {{ input_text('tramites_jefe_inmediato_cargo', 'Cargo del Jefe Inmediato', 'text', '', '100', '',
+                    datos.get('tramites_jefe_inmediato_cargo', '')) }}
+                    {{ input_text('tramites_servidor_recibe', 'Servidor que Recibe los Trámites Pendientes', 'text', '', '100',
                     'soloLetras', datos.get('tramites_servidor_recibe', '')) }}
+                    {{ input_text('tramites_servidor_recibe_cargo', 'Cargo del Servidor que Recibe', 'text', '', '100', '',
+                    datos.get('tramites_servidor_recibe_cargo', '')) }}
                     {{ input_text('tramites_obs', 'Observaciones', 'text', 'span-2', '255', '',
                     datos.get('tramites_obs', '')) }}
                     {{ input_text('tramites_nombre_responsable', 'Jefe de Área', 'text', 'span-2', '100', 'soloLetras',

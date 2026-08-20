@@ -90,10 +90,22 @@
     .ep-tabla th,
     .ep-tabla td {
         border: 1px solid #94a3b8;
-        padding: 3px 5px;
+        padding: 2px 4px;
         vertical-align: middle;
         word-wrap: break-word;
         position: relative;
+    }
+
+    /* Texto largo verbatim de las preguntas/descripciones (copia fiel del
+       formulario original, sin abreviar). Fuente y line-height más chicos
+       que el texto corto normal de la tabla para que el enunciado completo
+       quepa en el ancho de columna sin agrandar la fila más de lo
+       necesario; sigue siendo texto real seleccionable, no una imagen. */
+    .ep-desc-larga {
+        font-size: 6px;
+        line-height: 1.25;
+        font-weight: 600;
+        display: block;
     }
 
     /* Marcador invisible de 0x0 pegado a la esquina superior derecha de la
@@ -146,6 +158,7 @@
     .ep-label {
         display: inline-block;
         margin-right: 6px;
+        font-size: 6px;
     }
 
     /* Cada campo editable que comparte celda con otro (ej. "IP:" y
@@ -183,9 +196,13 @@
         border: 1px solid #ef4444;
     }
 
+    /* Altura agrandada ~20% (antes 60px) para que el sello de FirmaEC (QR +
+       nombre) sea claramente visible — ver _SELLO_ALTO/_SELLO_ANCHO_MAX en
+       app/routes/paz_salvo.py, agrandados en la misma proporción, así el
+       sello real que pyHanko estampa encima llena esta caja más grande. */
     .ep-firma-box {
         width: 100%;
-        height: 38px;
+        height: 72px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -199,15 +216,6 @@
     .ep-fila-fija {
         height: 16px;
         vertical-align: middle;
-    }
-
-    /* Aumentamos la altura de la caja de firma en tu CSS */
-    .ep-firma-box {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     /* DISEÑO IDÉNTICO A FIRMAEC FOTOGRAFÍA */
@@ -349,36 +357,36 @@
 <div class="ep-bloque__head">01. DATOS PERSONALES DEL SERVIDOR SALIENTE</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-th" width="18%">NOMBRES</th>
+        <th class="ep-th" width="18%">NOMBRES Y APELLIDOS</th>
         <td class="ep-td" colspan="3"><span id="espejo_campo_nombres_apellidos">{{ dat.get('nombres_apellidos') | default(ex.nombres ~ ' ' ~ ex.apellidos, true)
             }}</span><span class="ep-fin" id="espejo_fin_1"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">CÉDULA</th>
+        <th class="ep-th">CÉDULA DE CIUDADANIA / PASAPORTE</th>
         <td class="ep-td"><span id="espejo_campo_cedula">{{ dat.get('cedula') | default(ex.cedula, true) }}</span><span class="ep-fin" id="espejo_fin_2"></span></td>
-        <th class="ep-th" width="18%"><span id="espejo_campo_modalidad_th"></span>MODALIDAD</th>
+        <th class="ep-th" width="18%"><span id="espejo_campo_modalidad_th"></span>MODALIDAD LABORAL</th>
         <td class="ep-td"><span id="espejo_campo_modalidad">{{ dat.get('modalidad') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_3"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">INGRESO</th>
+        <th class="ep-th">FECHA INGRESO</th>
         <td class="ep-td"><span id="espejo_campo_fecha_ingreso">{{ dat.get('fecha_ingreso') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_4"></span></td>
-        <th class="ep-th"><span id="espejo_campo_fecha_salida_th"></span>SALIDA</th>
+        <th class="ep-th"><span id="espejo_campo_fecha_salida_th"></span>FECHA SALIDA</th>
         <td class="ep-td"><span id="espejo_campo_fecha_salida">{{ dat.get('fecha_salida') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_5"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">DIRECCIÓN</th>
-        <td class="ep-td" colspan="3"><div class="ep-linea-campo"><span id="espejo_campo_direccion">{{ dat.get('direccion') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Telf:</span><span id="espejo_campo_numero_domicilio">{{ dat.get('numero_domicilio') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_6"></span></td>
+        <th class="ep-th">DIRECCIÓN DOMICILIARIA</th>
+        <td class="ep-td" colspan="3"><div class="ep-linea-campo"><span id="espejo_campo_direccion">{{ dat.get('direccion') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Número Domicilio:</span><span id="espejo_campo_numero_domicilio">{{ dat.get('numero_domicilio') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_6"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">PROV / CANTÓN</th>
-        <td class="ep-td"><div class="ep-linea-campo"><span id="espejo_campo_provincia">{{ dat.get('provincia') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">/</span><span id="espejo_campo_canton">{{ dat.get('canton') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_7"></span></td>
-        <th class="ep-th">CEL / EMERGENCIA</th>
-        <td class="ep-td"><div class="ep-linea-campo"><span id="espejo_campo_celular">{{ dat.get('celular') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">/</span><span id="espejo_campo_emergencia">{{ dat.get('emergencia') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_8"></span></td>
+        <th class="ep-th">PROVINCIA</th>
+        <td class="ep-td"><div class="ep-linea-campo"><span id="espejo_campo_provincia">{{ dat.get('provincia') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Cantón:</span><span id="espejo_campo_canton">{{ dat.get('canton') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_7"></span></td>
+        <th class="ep-th">NÚMERO CELULAR</th>
+        <td class="ep-td"><div class="ep-linea-campo"><span id="espejo_campo_celular">{{ dat.get('celular') | default('—', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Núm. Contacto Emergencia:</span><span id="espejo_campo_emergencia">{{ dat.get('emergencia') | default('—', true) }}</span></div><span class="ep-fin" id="espejo_fin_8"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">EMAIL 1</th>
+        <th class="ep-th">EMAIL (1)</th>
         <td class="ep-td"><span id="espejo_campo_email1">{{ dat.get('email1') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_9"></span></td>
-        <th class="ep-th"><span id="espejo_campo_email2_th"></span>EMAIL 2</th>
+        <th class="ep-th"><span id="espejo_campo_email2_th"></span>EMAIL (2)</th>
         <td class="ep-td"><span id="espejo_campo_email2">{{ dat.get('email2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_10"></span></td>
     </tr>
 </table>
@@ -387,17 +395,17 @@
     UNIDAD</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-th" width="18%">LUGAR TRABAJO</th>
+        <th class="ep-th" width="18%">LUGAR DE TRABAJO</th>
         <td class="ep-td"><span id="espejo_campo_lugar_trabajo">{{ dat.get('lugar_trabajo') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_11"></span></td>
-        <th class="ep-th" width="18%"><span id="espejo_campo_grupo_ocupacional_th"></span>GRUPO OCUP.</th>
+        <th class="ep-th" width="18%"><span id="espejo_campo_grupo_ocupacional_th"></span>GRUPO OCUPACIONAL</th>
         <td class="ep-td"><span id="espejo_campo_grupo_ocupacional">{{ dat.get('grupo_ocupacional') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_12"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">UNIDAD</th>
+        <th class="ep-th">DIRECCIÓN / UNIDAD</th>
         <td class="ep-td" colspan="3"><span id="espejo_campo_unidad">{{ dat.get('unidad') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_13"></span></td>
     </tr>
     <tr>
-        <th class="ep-th">CARGO</th>
+        <th class="ep-th">CARGO DESEMPEÑADO</th>
         <td class="ep-td" colspan="3"><span id="espejo_campo_cargo">{{ dat.get('cargo') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_14"></span></td>
     </tr>
 </table>
@@ -406,19 +414,19 @@
     DOCUMENTAL Y TRÁMITES</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-tfh" width="22%">DESCRIPCIÓN</th>
+        <th class="ep-tfh" width="22%">DETALLE</th>
         <th class="ep-tfh" width="6%">S/N</th>
-        <th class="ep-tfh" width="22%">DESCRIPCIÓN</th>
+        <th class="ep-tfh" width="22%">DETALLE</th>
         <th class="ep-tfh" width="6%">S/N</th>
-        <th class="ep-tfh" width="20%">RESPONSABLE</th>
-        <th class="ep-tfh" width="24%">FIRMA ELECTRÓNICA</th>
+        <th class="ep-tfh" width="20%">NOMBRE RESPONSABLE</th>
+        <th class="ep-tfh" width="24%">FIRMA RESPONSABLE</th>
     </tr>
     <tr>
-        <td>Informe fin gestión</td>
+        <td><span class="ep-desc-larga">ENTREGA INFORME DE FIN DE GESTIÓN CON DETALLE DE ACTIVIDADES EJECUTADAS Y PENDIENTES (NO REQUIERE APROBACIÓN)</span></td>
         <td align="center"><span id="espejo_campo_tramites_informe"
                 class="ep-yn {% if dat.get('tramites_informe')=='SI' %}ep-yn--s{% elif dat.get('tramites_informe')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_informe') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_15"></span></td>
-        <td>QUIPUX en cero</td>
+        <td><span class="ep-desc-larga">ENTREGA LOS TRÁMITES ASIGNADOS EN EL SISTEMA DE GESTIÓN DOCUMENTAL QUIPUX (BANDEJA EN CERO)</span></td>
         <td align="center"><span id="espejo_campo_tramites_quipux_cero"
                 class="ep-yn {% if dat.get('tramites_quipux_cero')=='SI' %}ep-yn--s{% elif dat.get('tramites_quipux_cero')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_quipux_cero') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_16"></span></td>
@@ -426,11 +434,11 @@
         <td style="padding: 1px;">{{ firma_espejo('tramites_r1') }}</td>
     </tr>
     <tr>
-        <td>Fe presentación</td>
+        <td><span class="ep-desc-larga">FE DE PRESENTACIÓN DE LA ENTREGA EN RECEPCIÓN DE DOCUMENTOS DEL INFORME DE FIN DE GESTIÓN</span></td>
         <td align="center"><span id="espejo_campo_tramites_fe_presentacion"
                 class="ep-yn {% if dat.get('tramites_fe_presentacion')=='SI' %}ep-yn--s{% elif dat.get('tramites_fe_presentacion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_fe_presentacion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_18"></span></td>
-        <td>Claves asignadas</td>
+        <td><span class="ep-desc-larga">TIENE ASIGNADO CLAVES DE ACCESO EN SU UNIDAD</span></td>
         <td align="center"><span id="espejo_campo_tramites_claves_asignadas"
                 class="ep-yn {% if dat.get('tramites_claves_asignadas')=='SI' %}ep-yn--s{% elif dat.get('tramites_claves_asignadas')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_claves_asignadas') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_19"></span></td>
@@ -438,11 +446,11 @@
         <td style="padding: 1px;">{{ firma_espejo('tramites_r2') }}</td>
     </tr>
     <tr>
-        <td>Archivo físico LOSEP</td>
+        <td><span class="ep-desc-larga">REALIZA LA ENTREGA DE ARCHIVO DE LA DOCUMENTACIÓN FÍSICA Y DIGITAL (LOSEP)</span></td>
         <td align="center"><span id="espejo_campo_tramites_losep"
                 class="ep-yn {% if dat.get('tramites_losep')=='SI' %}ep-yn--s{% elif dat.get('tramites_losep')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_losep') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_21"></span></td>
-        <td>Acta entrega claves</td>
+        <td><span class="ep-desc-larga">REALIZÓ ACTA ENTREGA DE CLAVES DE SU UNIDAD</span></td>
         <td align="center"><span id="espejo_campo_tramites_acta_claves"
                 class="ep-yn {% if dat.get('tramites_acta_claves')=='SI' %}ep-yn--s{% elif dat.get('tramites_acta_claves')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tramites_acta_claves') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_22"></span></td>
@@ -450,12 +458,14 @@
         <td style="padding: 1px;">{{ firma_espejo('tramites_r3') }}</td>
     </tr>
     <tr style="background: #f8fafc;">
-        <td colspan="4"><div class="ep-linea-campo"><span class="ep-label"><strong>Admin. Contrato:</strong></span><span id="espejo_campo_tramites_admin_contrato">{{ dat.get('tramites_admin_contrato') | default('-', true) }}</span></div>
-            <div class="ep-linea-campo"><span class="ep-label"><strong>Desc:</strong></span><span id="espejo_campo_tramites_desc_contrato">{{ dat.get('tramites_desc_contrato') | default('-', true) }}</span></div>
-            <div class="ep-linea-campo"><span class="ep-label"><strong>Memo:</strong></span><span id="espejo_campo_tramites_memo">{{ dat.get('tramites_memo') | default('-', true) }}</span></div>
-            <div class="ep-linea-campo"><span class="ep-label"><strong>Jefe Inmediato:</strong></span><span id="espejo_campo_tramites_jefe_inmediato">{{ dat.get('tramites_jefe_inmediato') | default('-', true) }}</span></div>
-            <div class="ep-linea-campo"><span class="ep-label"><strong>Recibe:</strong></span><span id="espejo_campo_tramites_servidor_recibe">{{ dat.get('tramites_servidor_recibe') | default('-', true) }}</span></div>
-            <div class="ep-linea-campo"><span class="ep-label"><strong>Obs:</strong></span><span id="espejo_campo_tramites_obs">{{ dat.get('tramites_obs') | default('-', true) }}</span></div>
+        <td colspan="4"><div class="ep-linea-campo"><span class="ep-label"><strong>Es Administrador de Contrato:</strong></span><span id="espejo_campo_tramites_admin_contrato">{{ dat.get('tramites_admin_contrato') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Descripción del Contrato:</strong></span><span id="espejo_campo_tramites_desc_contrato">{{ dat.get('tramites_desc_contrato') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>N° Memorando Designación Nuevo Administrador de Contrato:</strong></span><span id="espejo_campo_tramites_memo">{{ dat.get('tramites_memo') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Nombre del Jefe Inmediato:</strong></span><span id="espejo_campo_tramites_jefe_inmediato">{{ dat.get('tramites_jefe_inmediato') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Cargo del Jefe Inmediato:</strong></span><span id="espejo_campo_tramites_jefe_inmediato_cargo">{{ dat.get('tramites_jefe_inmediato_cargo') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Nombre del Servidor que Recibe los Trámites Pendientes:</strong></span><span id="espejo_campo_tramites_servidor_recibe">{{ dat.get('tramites_servidor_recibe') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Cargo del Servidor que Recibe:</strong></span><span id="espejo_campo_tramites_servidor_recibe_cargo">{{ dat.get('tramites_servidor_recibe_cargo') | default('-', true) }}</span></div>
+            <div class="ep-linea-campo"><span class="ep-label"><strong>Observación:</strong></span><span id="espejo_campo_tramites_obs">{{ dat.get('tramites_obs') | default('-', true) }}</span></div>
         <span class="ep-fin" id="espejo_fin_24"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_tramites_nombre_responsable">{{ dat.get('tramites_nombre_responsable') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_25"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('tramites_jefe') }}</td>
@@ -466,50 +476,50 @@
     ADMINISTRATIVA</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-tfh" width="30%">DESCRIPCIÓN</th>
+        <th class="ep-tfh" width="30%">DETALLE</th>
         <th class="ep-tfh" width="6%">S/N</th>
         <th class="ep-tfh" width="20%">DATO ADICIONAL</th>
-        <th class="ep-tfh" width="20%">RESPONSABLE</th>
-        <th class="ep-tfh" width="24%">FIRMA ELECTRÓNICA</th>
+        <th class="ep-tfh" width="20%">NOMBRE RESPONSABLE</th>
+        <th class="ep-tfh" width="24%">FIRMA RESPONSABLE</th>
     </tr>
     <tr>
-        <td>Entrega informe actividades</td>
+        <td><span class="ep-desc-larga">¿REALIZÓ LA ENTREGA DEL INFORME?</span></td>
         <td align="center"><span id="espejo_campo_admin_informe"
                 class="ep-yn {% if dat.get('admin_informe')=='SI' %}ep-yn--s{% elif dat.get('admin_informe')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('admin_informe') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_26"></span></td>
-        <td align="center"><span class="ep-label">Admin. Contrato:</span><span id="espejo_campo_admin_es_contrato">{{ dat.get('admin_es_contrato') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_27"></span></td>
+        <td align="center"><span class="ep-label">¿Es Administrador de Contrato?</span><span id="espejo_campo_admin_es_contrato">{{ dat.get('admin_es_contrato') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_27"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_admin_nombre_resp1">{{ dat.get('admin_nombre_resp1') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_28"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('admin_r1') }}</td>
     </tr>
     <tr>
-        <td>Entrega bienes y muebles</td>
+        <td><span class="ep-desc-larga">¿ENTREGÓ BIENES MUEBLES Y EQUIPOS?</span></td>
         <td align="center"><span id="espejo_campo_admin_bienes"
                 class="ep-yn {% if dat.get('admin_bienes')=='SI' %}ep-yn--s{% elif dat.get('admin_bienes')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('admin_bienes') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_29"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Val: $</span><span id="espejo_campo_admin_valor_bienes">{{ dat.get('admin_valor_bienes') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Acta:</span><span id="espejo_campo_admin_acta_bienes">{{ dat.get('admin_acta_bienes') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_30"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Val: $</span><span id="espejo_campo_admin_valor_bienes">{{ dat.get('admin_valor_bienes') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Número de Acta:</span><span id="espejo_campo_admin_acta_bienes">{{ dat.get('admin_acta_bienes') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_30"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_admin_nombre_resp2">{{ dat.get('admin_nombre_resp2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_31"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('admin_r2') }}</td>
     </tr>
     <tr>
-        <td>Deducibles pendientes</td>
+        <td><span class="ep-desc-larga">¿TIENE VALORES PENDIENTES POR DEDUCIBLES?</span></td>
         <td align="center"><span id="espejo_campo_admin_deducibles"
                 class="ep-yn {% if dat.get('admin_deducibles')=='SI' %}ep-yn--s{% elif dat.get('admin_deducibles')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('admin_deducibles') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_32"></span></td>
-        <td align="center"><span class="ep-label">Valor: $</span><span id="espejo_campo_admin_deducibles_valor">{{ dat.get('admin_deducibles_valor') | default('0', true) }}</span><span class="ep-fin" id="espejo_fin_33"></span></td>
+        <td align="center"><span class="ep-label">Valor a Descontar:</span><span id="espejo_campo_admin_deducibles_valor">{{ dat.get('admin_deducibles_valor') | default('0', true) }}</span><span class="ep-fin" id="espejo_fin_33"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_admin_nombre_resp3">{{ dat.get('admin_nombre_resp3') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_34"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('admin_r3') }}</td>
     </tr>
     <tr>
-        <td>Pasajes justificar</td>
+        <td><span class="ep-desc-larga">¿TIENE PASAJES AÉREOS POR JUSTIFICAR?</span></td>
         <td align="center"><span id="espejo_campo_admin_pasajes"
                 class="ep-yn {% if dat.get('admin_pasajes')=='SI' %}ep-yn--s{% elif dat.get('admin_pasajes')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('admin_pasajes') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_35"></span></td>
-        <td align="center"><span class="ep-label">Valor: $</span><span id="espejo_campo_admin_pasajes_valor">{{ dat.get('admin_pasajes_valor') | default('0', true) }}</span><span class="ep-fin" id="espejo_fin_36"></span></td>
+        <td align="center"><span class="ep-label">Valor a Descontar:</span><span id="espejo_campo_admin_pasajes_valor">{{ dat.get('admin_pasajes_valor') | default('0', true) }}</span><span class="ep-fin" id="espejo_fin_36"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_admin_nombre_resp4">{{ dat.get('admin_nombre_resp4') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_37"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('admin_r4') }}</td>
     </tr>
     <tr style="background: #f8fafc;">
-        <td colspan="3" align="right"><strong>DIRECTOR/A ADMINISTRATIVO FINANCIERO:</strong></td>
+        <td colspan="3" align="right"><strong>Nombre del/la Director/a Administrativo/a Financiero/a:</strong></td>
         <td class="ep-td" align="center"><span id="espejo_campo_admin_responsable">{{ dat.get('admin_responsable') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_38"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('admin_dir') }}</td>
     </tr>
@@ -518,45 +528,45 @@
 <div class="ep-bloque__head" style="background: linear-gradient(90deg, #6d28d9 0%, #8b5cf6 100%);">05. GESTIÓN TIC</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-tfh" width="30%">DESCRIPCIÓN</th>
+        <th class="ep-tfh" width="30%">DETALLE</th>
         <th class="ep-tfh" width="6%">S/N</th>
         <th class="ep-tfh" width="20%">DATO ADICIONAL</th>
-        <th class="ep-tfh" width="20%">RESPONSABLE</th>
-        <th class="ep-tfh" width="24%">FIRMA ELECTRÓNICA</th>
+        <th class="ep-tfh" width="20%">NOMBRE RESPONSABLE</th>
+        <th class="ep-tfh" width="24%">FIRMA RESPONSABLE</th>
     </tr>
     <tr>
-        <td>Verificación equipo</td>
+        <td><span class="ep-desc-larga">¿SE REALIZÓ LA VERIFICACIÓN DEL EQUIPO INFOMÁTICO?</span></td>
         <td align="center"><span id="espejo_campo_tic_verificacion"
                 class="ep-yn {% if dat.get('tic_verificacion')=='SI' %}ep-yn--s{% elif dat.get('tic_verificacion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tic_verificacion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_39"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">IP:</span><span id="espejo_campo_tic_ip_fija">{{ dat.get('tic_ip_fija') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Liberó:</span><span id="espejo_campo_tic_liberacion">{{ dat.get('tic_liberacion') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Obs:</span><span id="espejo_campo_tic_obs1">{{ dat.get('tic_obs1') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_40"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">¿Tiene Acceso a IP Fija Wi-Fi y/o Móvil?:</span><span id="espejo_campo_tic_ip_fija">{{ dat.get('tic_ip_fija') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">¿Se Realizó la Liberación?:</span><span id="espejo_campo_tic_liberacion">{{ dat.get('tic_liberacion') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Observación:</span><span id="espejo_campo_tic_obs1">{{ dat.get('tic_obs1') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_40"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_tic_nombre_resp1">{{ dat.get('tic_nombre_resp1') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_41"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('tic_r1') }}</td>
     </tr>
     <tr>
-        <td>Entrega Backup</td>
+        <td><span class="ep-desc-larga">ENTREGA DEL BACKUP DE LA INFORMACIÓN GENERADA (ENTREGAR RUTA DEL BACKUP)</span></td>
         <td align="center"><span id="espejo_campo_tic_backup"
                 class="ep-yn {% if dat.get('tic_backup')=='SI' %}ep-yn--s{% elif dat.get('tic_backup')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tic_backup') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_42"></span></td>
-        <td align="center">Ruta: <span id="espejo_campo_tic_ruta_backup">{{ dat.get('tic_ruta_backup') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_43"></span></td>
+        <td align="center"><span class="ep-label">Ruta del Backup:</span><span id="espejo_campo_tic_ruta_backup">{{ dat.get('tic_ruta_backup') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_43"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_tic_nombre_resp2">{{ dat.get('tic_nombre_resp2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_44"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('tic_r2') }}</td>
     </tr>
     <tr>
-        <td>Cierre Cuentas / Accesos</td>
+        <td><span class="ep-desc-larga">RETIRO DE CONTROL DE ACCESO (CONTRASEÑAS DE SISTEMAS DE INFORMACIÓN)</span></td>
         <td align="center"><span id="espejo_campo_tic_retiro_acceso"
                 class="ep-yn {% if dat.get('tic_retiro_acceso')=='SI' %}ep-yn--s{% elif dat.get('tic_retiro_acceso')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tic_retiro_acceso') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_45"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">C:</span><span id="espejo_campo_tic_cierre_correo">{{ dat.get('tic_cierre_correo') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Q:</span><span id="espejo_campo_tic_quipux">{{ dat.get('tic_quipux') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">S:</span><span id="espejo_campo_tic_esigef">{{ dat.get('tic_esigef') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">SP:</span><span id="espejo_campo_tic_spryn">{{ dat.get('tic_spryn') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">eB:</span><span id="espejo_campo_tic_esbye">{{ dat.get('tic_esbye') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_46"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Correo Institucional:</span><span id="espejo_campo_tic_cierre_correo">{{ dat.get('tic_cierre_correo') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Quipux:</span><span id="espejo_campo_tic_quipux">{{ dat.get('tic_quipux') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">eSIGEF:</span><span id="espejo_campo_tic_esigef">{{ dat.get('tic_esigef') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">SPRYN:</span><span id="espejo_campo_tic_spryn">{{ dat.get('tic_spryn') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">eSByE:</span><span id="espejo_campo_tic_esbye">{{ dat.get('tic_esbye') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_46"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_tic_nombre_resp3">{{ dat.get('tic_nombre_resp3') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_47"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('tic_r3') }}</td>
     </tr>
     <tr>
-        <td>Tarjeta Acceso</td>
+        <td><span class="ep-desc-larga">¿SE REALIZÓ LA ENTREGA Y DESACTIVACIÓN DE LA TARJETA DE ACCESO?</span></td>
         <td align="center"><span id="espejo_campo_tic_tarjeta_cuentas"
                 class="ep-yn {% if dat.get('tic_tarjeta_cuentas')=='SI' %}ep-yn--s{% elif dat.get('tic_tarjeta_cuentas')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('tic_tarjeta_cuentas') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_48"></span></td>
-        <td align="center"><span class="ep-label">Obs:</span><span id="espejo_campo_tic_obs">{{ dat.get('tic_obs') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_49"></span></td>
+        <td align="center"><span class="ep-label">Observación:</span><span id="espejo_campo_tic_obs">{{ dat.get('tic_obs') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_49"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_tic_nombre_resp4">{{ dat.get('tic_nombre_resp4') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_50"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('tic_r4') }}</td>
     </tr>
@@ -571,50 +581,50 @@
     GESTIÓN FINANCIERA</div>
 <table class="ep-tabla">
     <tr>
-        <th class="ep-tfh" width="30%">DESCRIPCIÓN</th>
+        <th class="ep-tfh" width="30%">DETALLE</th>
         <th class="ep-tfh" width="6%">S/N</th>
         <th class="ep-tfh" width="20%">VALOR</th>
-        <th class="ep-tfh" width="20%">RESPONSABLE</th>
-        <th class="ep-tfh" width="24%">FIRMA ELECTRÓNICA</th>
+        <th class="ep-tfh" width="20%">NOMBRE RESPONSABLE</th>
+        <th class="ep-tfh" width="24%">FIRMA RESPONSABLE</th>
     </tr>
     <tr>
-        <td>Saldos contables</td>
+        <td><span class="ep-desc-larga">¿TIENE VALORES PENDIENTES DE PAGO POR SALDOS CONTABLES? (VALORES PENDIENTES POR VIÁTICOS, CAJA CHICA, PASAJES AÉREOS)</span></td>
         <td align="center"><span id="espejo_campo_fin_saldos"
                 class="ep-yn {% if dat.get('fin_saldos')=='SI' %}ep-yn--s{% elif dat.get('fin_saldos')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('fin_saldos') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_52"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor: $</span><span id="espejo_campo_fin_saldos_valor">{{ dat.get('fin_saldos_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Obs:</span><span id="espejo_campo_fin_obs1">{{ dat.get('fin_obs1') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_53"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor a Descontar: $</span><span id="espejo_campo_fin_saldos_valor">{{ dat.get('fin_saldos_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Observación:</span><span id="espejo_campo_fin_obs1">{{ dat.get('fin_obs1') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_53"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_fin_nombre_resp1">{{ dat.get('fin_nombre_resp1') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_54"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('fin_r1') }}</td>
     </tr>
     <tr>
-        <td>Anticipo sueldos</td>
+        <td><span class="ep-desc-larga">¿TIENE VALORES PENDIENTES DE PAGO POR ANTICIPO DE SUELDOS?</span></td>
         <td align="center"><span id="espejo_campo_fin_anticipo"
                 class="ep-yn {% if dat.get('fin_anticipo')=='SI' %}ep-yn--s{% elif dat.get('fin_anticipo')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('fin_anticipo') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_55"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor: $</span><span id="espejo_campo_fin_anticipo_valor">{{ dat.get('fin_anticipo_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Obs:</span><span id="espejo_campo_fin_obs2">{{ dat.get('fin_obs2') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_56"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor a Descontar: $</span><span id="espejo_campo_fin_anticipo_valor">{{ dat.get('fin_anticipo_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Observación:</span><span id="espejo_campo_fin_obs2">{{ dat.get('fin_obs2') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_56"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_fin_nombre_resp2">{{ dat.get('fin_nombre_resp2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_57"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('fin_r2') }}</td>
     </tr>
     <tr>
-        <td>Recuperación valores</td>
+        <td><span class="ep-desc-larga">¿TIENE VALORES PENDIENTES DE PAGO POR RECUPERACIÓN DE VALORES?</span></td>
         <td align="center"><span id="espejo_campo_fin_recuperacion"
                 class="ep-yn {% if dat.get('fin_recuperacion')=='SI' %}ep-yn--s{% elif dat.get('fin_recuperacion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('fin_recuperacion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_58"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor: $</span><span id="espejo_campo_fin_recuperacion_valor">{{ dat.get('fin_recuperacion_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Obs:</span><span id="espejo_campo_fin_obs3">{{ dat.get('fin_obs3') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_59"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor a Descontar: $</span><span id="espejo_campo_fin_recuperacion_valor">{{ dat.get('fin_recuperacion_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Observación:</span><span id="espejo_campo_fin_obs3">{{ dat.get('fin_obs3') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_59"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_fin_nombre_resp3">{{ dat.get('fin_nombre_resp3') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_60"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('fin_r3') }}</td>
     </tr>
     <tr>
-        <td>Devolución muebles</td>
+        <td><span class="ep-desc-larga">¿TIENE VALORES PENDIENTES DE PAGO DEVOLUCIÓN DE MUEBLES Y EQUIPOS DE OFICINA?</span></td>
         <td align="center"><span id="espejo_campo_fin_devolucion"
                 class="ep-yn {% if dat.get('fin_devolucion')=='SI' %}ep-yn--s{% elif dat.get('fin_devolucion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('fin_devolucion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_61"></span></td>
-        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor: $</span><span id="espejo_campo_fin_devolucion_valor">{{ dat.get('fin_devolucion_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Obs:</span><span id="espejo_campo_fin_obs4">{{ dat.get('fin_obs4') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_62"></span></td>
+        <td align="center"><div class="ep-linea-campo"><span class="ep-label">Valor a Descontar: $</span><span id="espejo_campo_fin_devolucion_valor">{{ dat.get('fin_devolucion_valor') | default('0', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Observación:</span><span id="espejo_campo_fin_obs4">{{ dat.get('fin_obs4') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_62"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_fin_nombre_resp4">{{ dat.get('fin_nombre_resp4') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_63"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('fin_r4') }}</td>
     </tr>
     <tr style="background: #f8fafc;">
-        <td colspan="3" align="right"><strong>DIRECTOR/A FINANCIERO:</strong></td>
+        <td colspan="3" align="right"><strong>Nombre del/la Director/a Administrativo/a Financiero/a:</strong></td>
         <td class="ep-td" align="center"><span id="espejo_campo_fin_director">{{ dat.get('fin_director') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_64"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('fin_dir') }}</td>
     </tr>
@@ -628,7 +638,7 @@
         <td width="6%" align="center"><span id="espejo_campo_seg_archivos"
                 class="ep-yn {% if dat.get('seg_archivos')=='SI' %}ep-yn--s{% elif dat.get('seg_archivos')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('seg_archivos') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_65"></span></td>
-        <td width="20%" align="center">Copia: <span id="espejo_campo_seg_entrega_copia">{{ dat.get('seg_entrega_copia') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_66"></span></td>
+        <td width="20%" align="center"><span class="ep-label">Entrega Copia de Informe de Actividades:</span><span id="espejo_campo_seg_entrega_copia">{{ dat.get('seg_entrega_copia') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_66"></span></td>
         <td class="ep-td" width="20%" align="center"><span id="espejo_campo_seg_nombre_resp1">{{ dat.get('seg_nombre_resp1') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_67"></span></td>
         <td width="24%" style="padding: 1px;">{{ firma_espejo('seg_r1') }}</td>
     </tr>
@@ -637,12 +647,12 @@
         <td align="center"><span id="espejo_campo_seg_archivos_fisicos"
                 class="ep-yn {% if dat.get('seg_archivos_fisicos')=='SI' %}ep-yn--s{% elif dat.get('seg_archivos_fisicos')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('seg_archivos_fisicos') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_68"></span></td>
-        <td align="center">Info: <span id="espejo_campo_seg_verificacion_info">{{ dat.get('seg_verificacion_info') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_69"></span></td>
+        <td align="center"><span class="ep-label">Verificación de la Información Institucional:</span><span id="espejo_campo_seg_verificacion_info">{{ dat.get('seg_verificacion_info') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_69"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_seg_nombre_resp2">{{ dat.get('seg_nombre_resp2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_70"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('seg_r2') }}</td>
     </tr>
     <tr style="background: #f8fafc;">
-        <td colspan="3" align="right"><strong>OFICIAL SEGURIDAD:</strong> <span id="espejo_campo_seg_oficial">{{ dat.get('seg_oficial') | default('-', true)
+        <td colspan="3" align="right"><strong>Nombre del Oficial de Seguridad Institucional:</strong> <span id="espejo_campo_seg_oficial">{{ dat.get('seg_oficial') | default('-', true)
             }}</span><span class="ep-fin" id="espejo_fin_71"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_seg_responsable">{{ dat.get('seg_responsable') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_72"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('seg_oficial_sig') }}</td>
@@ -653,16 +663,16 @@
 </div>
 <table class="ep-tabla">
     <tr>
-        <td width="30%">Capacitación</td>
+        <td width="30%"><span class="ep-desc-larga">EL RESPONSABLE DE CAPACITACIÓN CERTIFICA QUE EL SERVIDOR SALIENTE DEVENGÓ LOS CURSOS RECIBIDOS EN LA INSTITUCIÓN</span></td>
         <td width="6%" align="center"><span id="espejo_campo_rrhh_capacitacion"
                 class="ep-yn {% if dat.get('rrhh_capacitacion')=='SI' %}ep-yn--s{% elif dat.get('rrhh_capacitacion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_capacitacion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_73"></span></td>
-        <td width="20%" align="center">Cursos: <span id="espejo_campo_rrhh_cursos_eval">{{ dat.get('rrhh_cursos_eval') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_74"></span></td>
+        <td width="20%" align="center"><span class="ep-label">Cursos:</span><span id="espejo_campo_rrhh_cursos_eval">{{ dat.get('rrhh_cursos_eval') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_74"></span></td>
         <td class="ep-td" width="20%" align="center"><span id="espejo_campo_rrhh_resp_capacitacion">{{ dat.get('rrhh_resp_capacitacion') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_75"></span></td>
         <td width="24%" style="padding: 1px;">{{ firma_espejo('rrhh_r1') }}</td>
     </tr>
     <tr>
-        <td>Evaluación</td>
+        <td><span class="ep-desc-larga">EL RESPONSABLE DE EVALUACIÓN DEL DESEMPEÑO CERTIFICA QUE AL SERVIDOR SALIENTE SE APLICÓ LA EVALUACIÓN DEL DESEMPEÑO DEL AÑO EN CURSO</span></td>
         <td align="center"><span id="espejo_campo_rrhh_evaluacion"
                 class="ep-yn {% if dat.get('rrhh_evaluacion')=='SI' %}ep-yn--s{% elif dat.get('rrhh_evaluacion')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_evaluacion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_76"></span></td>
@@ -671,7 +681,7 @@
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r2') }}</td>
     </tr>
     <tr>
-        <td>Viajes exterior</td>
+        <td><span class="ep-desc-larga">EL RESPONSABLE DE VIAJES AL EXTERIOR CERTIFICA QUE EL SERVIDOR SALIENTE REALIZÓ LA DEVENGACIÓN Y/O CAPACITACIÓN DE LOS VIAJES REALIZADOS DURANTE EL ÚLTIMO AÑO</span></td>
         <td align="center"><span id="espejo_campo_rrhh_viajes"
                 class="ep-yn {% if dat.get('rrhh_viajes')=='SI' %}ep-yn--s{% elif dat.get('rrhh_viajes')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_viajes') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_78"></span></td>
@@ -680,7 +690,7 @@
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r3') }}</td>
     </tr>
     <tr>
-        <td>SIITH</td>
+        <td><span class="ep-desc-larga">EL RESPONSABLE DEL SISTEMA INTEGRADO DE INFORMACIÓN DE TALENTO HUMANO (SIITH) CERTIFICA QUE EL SERVIDOR SALIENTE FUE DESVINCULADO DEL PUESTO QUE RENUNCIA</span></td>
         <td align="center"><span id="espejo_campo_rrhh_siith"
                 class="ep-yn {% if dat.get('rrhh_siith')=='SI' %}ep-yn--s{% elif dat.get('rrhh_siith')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_siith') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_80"></span></td>
@@ -689,41 +699,41 @@
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r4') }}</td>
     </tr>
     <tr>
-        <td>Vacaciones</td>
+        <td><span class="ep-desc-larga">EL RESPONSABLE DE VACACIONES CERTIFICA QUE EL SERVIDOR SALIENTE CUENTA CON UN TOTAL DE DÍAS ACUMULADOS VACACIONES</span></td>
         <td align="center"><span class="ep-yn" id="espejo_campo_rrhh_vacaciones">{{ dat.get('rrhh_vacaciones') | default('0', true) }}</span><span class="ep-fin" id="espejo_fin_82"></span></td>
-        <td align="center">Cert: <span id="espejo_campo_rrhh_num_certificado">{{ dat.get('rrhh_num_certificado') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_83"></span></td>
+        <td align="center"><span class="ep-label">Número de Certificado Emitido:</span><span id="espejo_campo_rrhh_num_certificado">{{ dat.get('rrhh_num_certificado') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_83"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_rrhh_resp_vacaciones">{{ dat.get('rrhh_resp_vacaciones') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_84"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r5') }}</td>
     </tr>
     <tr>
-        <td>Juramentada</td>
+        <td><span class="ep-desc-larga">ENTREGA CONSTANCIA Y DECLARACIÓN JURAMENTADA DE FIN DE GESTIÓN</span></td>
         <td align="center"><span id="espejo_campo_rrhh_juramentada"
                 class="ep-yn {% if dat.get('rrhh_juramentada')=='SI' %}ep-yn--s{% elif dat.get('rrhh_juramentada')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_juramentada') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_85"></span></td>
-        <td align="center">N°: <span id="espejo_campo_rrhh_num_declaracion">{{ dat.get('rrhh_num_declaracion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_86"></span></td>
+        <td align="center"><span class="ep-label">Número de Declaración Juramentada de Fin de Gestión Recibida:</span><span id="espejo_campo_rrhh_num_declaracion">{{ dat.get('rrhh_num_declaracion') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_86"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_rrhh_resp_juramentada">{{ dat.get('rrhh_resp_juramentada') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_87"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r6') }}</td>
     </tr>
     <tr>
-        <td>Credencial</td>
+        <td><span class="ep-desc-larga">ENTREGA CREDENCIAL INSTITUCIONAL, PORTA CREDENCIAL Y COLGANTE</span></td>
         <td align="center"><span id="espejo_campo_rrhh_credencial"
                 class="ep-yn {% if dat.get('rrhh_credencial')=='SI' %}ep-yn--s{% elif dat.get('rrhh_credencial')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_credencial') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_88"></span></td>
-        <td align="center">Respaldo CD: <span id="espejo_campo_rrhh_respaldo_cd">{{ dat.get('rrhh_respaldo_cd') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_89"></span></td>
+        <td align="center"><span class="ep-desc-larga">ENTREGA COPIA DE INFORMACIÓN DE ACTIVIDADES Y RESPALDOS (CD):</span> <span id="espejo_campo_rrhh_respaldo_cd">{{ dat.get('rrhh_respaldo_cd') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_89"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_rrhh_resp_credencial2">{{ dat.get('rrhh_resp_credencial2') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_90"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r7') }}</td>
     </tr>
     <tr>
-        <td>Acta Bienes / CD</td>
+        <td><span class="ep-desc-larga">ACTA DE BIENES DEL CUSTODIO</span></td>
         <td align="center"><span id="espejo_campo_rrhh_acta_bienes"
                 class="ep-yn {% if dat.get('rrhh_acta_bienes')=='SI' %}ep-yn--s{% elif dat.get('rrhh_acta_bienes')=='NO' %}ep-yn--n{% endif %}">{{
                 dat.get('rrhh_acta_bienes') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_91"></span></td>
-        <td align="center">Ropa Trabajo: <span id="espejo_campo_rrhh_ropa_trabajo">{{ dat.get('rrhh_ropa_trabajo') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_92"></span></td>
+        <td align="center"><span class="ep-desc-larga">ENTREGA ROPA DE TRABAJO O EQUIPO DE PROTECCIÓN:</span> <span id="espejo_campo_rrhh_ropa_trabajo">{{ dat.get('rrhh_ropa_trabajo') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_92"></span></td>
         <td class="ep-td" align="center"><span id="espejo_campo_rrhh_resp_acta">{{ dat.get('rrhh_resp_acta') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_93"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('rrhh_r8') }}</td>
     </tr>
     <tr style="background: #f8fafc;">
-        <td colspan="3" align="right"><strong>DIRECTOR/A RRHH:</strong></td>
+        <td colspan="3" align="right"><strong>Nombre del/la Director/a de Administración de Recursos Humanos:</strong></td>
         <td class="ep-td" align="center"><span id="espejo_campo_rrhh_director">{{ dat.get('rrhh_director') | default('—', true) }}</span><span class="ep-fin" id="espejo_fin_94"></span></td>
         <td style="padding: 1px;">{{ firma_espejo('rrhh_dir') }}</td>
     </tr>
@@ -733,27 +743,27 @@
     DOCUMENTOS</div>
 <table class="ep-tabla">
     <tr>
-        <td width="30%" class="ep-fila-fija">Fecha Recepción</td>
+        <td width="30%" class="ep-fila-fija"><span class="ep-desc-larga">Fecha de Entrega del Paz y Salvo</span></td>
         <td width="15%" align="center" class="ep-fila-fija"><span id="espejo_campo_recepcion_fecha">{{ dat.get('recepcion_fecha') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_95"></span></td>
-        <td width="11%" align="right" class="ep-fila-fija"><span id="espejo_campo_recepcion_hojas_b"></span><span class="ep-label"><strong>Hojas:</strong></span><span class="ep-fin" id="espejo_fin_96"></span></td>
+        <td width="11%" align="right" class="ep-fila-fija"><span id="espejo_campo_recepcion_hojas_b"></span><span class="ep-label"><strong>N° Hojas Recibidas:</strong></span><span class="ep-fin" id="espejo_fin_96"></span></td>
         <td class="ep-td ep-fila-fija" width="20%" align="center"><span id="espejo_campo_recepcion_hojas">{{ dat.get('recepcion_hojas') | default('-', true) }}</span><span class="ep-fin" id="espejo_fin_97"></span></td>
         <td width="24%" rowspan="2" style="padding: 1px;">{{ firma_espejo('recepcion_r1') }}</td>
     </tr>
     <tr>
-        <td align="right" class="ep-fila-fija"><strong>Servidor:</strong></td>
-        <td class="ep-td" colspan="3" align="center"><div class="ep-linea-campo"><span id="espejo_campo_recepcion_servidor">{{ dat.get('recepcion_servidor') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Cargo:</span><span id="espejo_campo_recepcion_cargo">{{ dat.get('recepcion_cargo') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_98"></span></td>
+        <td align="right" class="ep-fila-fija"><strong>Nombre Servidor/a Quien Recibe:</strong></td>
+        <td class="ep-td" colspan="3" align="center"><div class="ep-linea-campo"><span id="espejo_campo_recepcion_servidor">{{ dat.get('recepcion_servidor') | default('-', true) }}</span></div><div class="ep-linea-campo"><span class="ep-label">Cargo Servidor/a Quien Recibe:</span><span id="espejo_campo_recepcion_cargo">{{ dat.get('recepcion_cargo') | default('-', true) }}</span></div><span class="ep-fin" id="espejo_fin_98"></span></td>
     </tr>
 </table>
 
 <div class="ep-bloque__head" style="background: linear-gradient(90deg, #4c1d95 0%, #8b5cf6 100%);">10. AUTORIZACIÓN —
     SERVIDOR SALIENTE</div>
 <div style="padding: 6px 10px; text-align: justify; font-size: 7.5px; background: #faf5ff;">
-    Conforme lo establecido en el Reglamento General a la Ley Orgánica de Servicio Público (LOSEP), quien suscribe el
-    presente formulario de "Paz y Salvo para la liquidación de haberes que me corresponde", <strong>AUTORIZO</strong> a
-    la DIRECCIÓN ADMINISTRATIVA FINANCIERA del INAMHI, para que efectúe los descuentos detallados en el presente
-    documento por reintegro y/o recuperación de valores, bienes y/o especies que se hayan encontrado a mi cargo y no
-    hayan sido devueltos en las condiciones recibidas, los mismos que serán DESCONTADOS a través de mi liquidación
-    definitiva de haberes.
+    Conforme lo establecido en el artículo 110 del Reglamento a la Ley Orgánica de Servicio Público (LOSEP), quien
+    suscribe el presente formulario de "paz y salvo" para la liquidación de haberes que me corresponde,
+    <strong>AUTORIZO</strong> a la DIRECCIÓN ADMINISTRATIVA FINANCIERA del INAMHI, para que efectúe los descuentos
+    detallados en el presente documento por reintegro y/o recuperación de valores, bienes y/o especies que se hayan
+    encontrado a mi cargo y no hayan sido devueltos en las condiciones recibidas, los mismos que serán DESCONTADOS a
+    través de mi rol de pagos y/o liquidación de haberes.
 </div>
 <div style="text-align: center; margin-top: 5px; background: #faf5ff; padding-bottom: 10px;">
     <!-- width/height fijos + overflow:hidden a propósito: deben caber DENTRO

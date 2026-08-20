@@ -55,17 +55,21 @@ ESTILO_SELLO_FIRMA = QRStampStyle(
     background_opacity=1.0,
 )
 
-# Tamaño máximo del sello visual en la celda "Firma Electrónica" (en puntos PDF)
-_SELLO_ANCHO_MAX = 112
-_SELLO_ALTO = 42
+# Tamaño máximo del sello visual en la celda "Firma Electrónica" (en puntos
+# PDF). Agrandado ~20% (antes 112x42) para que el sello real de FirmaEC sea
+# claramente visible, en la misma proporción que .ep-firma-box en
+# hoja_espejo.html (60px -> 72px, ver ese archivo).
+_SELLO_ANCHO_MAX = 134
+_SELLO_ALTO = 50
 
 # Excepciones: campos cuya celda no es la columna estándar de la tabla
-# (p. ej. el bloque centrado de 175px de "10. AUTORIZACIÓN — SERVIDOR
-# SALIENTE"), y por eso necesitan un ancho de sello distinto al de columna.
+# (p. ej. el bloque centrado de 165x50px de "10. AUTORIZACIÓN — SERVIDOR
+# SALIENTE" en hoja_espejo.html), y por eso necesitan un ancho de sello
+# distinto al de columna.
 _SELLO_ANCHO_POR_CAMPO = {
-    'servidor_saliente': 128,
+    'servidor_saliente': 154,
 }
-_MARGEN_PAGINA_PT = 8 * 72 / 25.4  # los 8mm de @page margin definidos en pdf_service.py
+_MARGEN_PAGINA_PT = 13 * 72 / 25.4  # los 13mm de @page margin definidos en pdf_service.py (_MARGEN_PDF_MM)
 
 # ====================================================================
 # FUNCIÓN GLOBAL: GENERADOR DE QR VECTORIAL EXACTO A FIRMAEC
