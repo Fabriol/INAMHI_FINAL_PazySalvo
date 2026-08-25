@@ -132,140 +132,138 @@
                 <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
 
                 {% set dic_etiquetas = {
-                'nombres_apellidos': ['Nombres y Apellidos', 'text', 'soloLetras', '100'], 'cedula': ['Cédula', 'text',
+                'nombres_apellidos': ['Nombres y Apellidos', 'text', 'soloLetras', '100'], 'cedula': ['Cédula de Ciudadanía / Pasaporte', 'text',
                 'validarCedula', '10'],
-                'modalidad': ['Modalidad Laboral', 'select_modalidad'], 'fecha_ingreso': ['Fecha de Ingreso', 'date',
+                'modalidad': ['Modalidad Laboral', 'select_modalidad'], 'fecha_ingreso': ['Fecha Ingreso', 'date',
                 'validarFechas', ''],
-                'fecha_salida': ['Fecha de Salida', 'date', 'validarFechas', ''], 'direccion': ['Dirección', 'text', '',
+                'fecha_salida': ['Fecha Salida', 'date', 'validarFechas', ''], 'direccion': ['Dirección Domiciliaria', 'text', '',
                 '200'],
-                'numero_domicilio': ['Teléfono Fijo', 'text', 'validarConvencional', '9'], 'celular': ['Celular',
+                'numero_domicilio': ['Número Domicilio', 'text', 'validarConvencional', '9'], 'celular': ['Número Celular',
                 'text', 'validarCelular', '10'],
-                'emergencia': ['Contacto Emergencia', 'text', 'validarCelular', '10'], 'email1': ['Email Principal',
+                'emergencia': ['Número Contacto Emergencia', 'text', 'validarCelular', '10'], 'email1': ['Email (1)',
                 'email', 'validarEmail', '100'],
-                'email2': ['Email Alternativo', 'email', 'validarEmail', '100'], 'provincia': ['Provincia',
+                'email2': ['Email (2)', 'email', 'validarEmail', '100'], 'provincia': ['Provincia',
                 'select_provincia'],
                 'canton': ['Cantón', 'select_canton'], 'lugar_trabajo': ['Lugar de Trabajo', 'select_lugar'],
                 'grupo_ocupacional': ['Grupo Ocupacional', 'select_grupo'], 'unidad': ['Dirección / Unidad', 'text',
                 'validarUnidad', '100'],
-                'cargo': ['Cargo', 'text', '', '100'],
+                'cargo': ['Cargo Desempeñado', 'text', '', '100'],
 
-                'tramites_informe': ['S/N Informe gestión', 'select'], 'tramites_quipux_cero': ['S/N QUIPUX cero',
+                'tramites_informe': ['ENTREGA INFORME DE FIN DE GESTIÓN CON DETALLE DE ACTIVIDADES EJECUTADAS Y PENDIENTES (NO REQUIERE APROBACIÓN)', 'select'], 'tramites_quipux_cero': ['ENTREGA LOS TRÁMITES ASIGNADOS EN EL SISTEMA DE GESTIÓN DOCUMENTAL QUIPUX (BANDEJA EN CERO)',
                 'select'],
-                'tramites_nombre_resp1': ['Resp. Fila 1', 'text', 'soloLetras', '100'], 'tramites_r1': ['Firma PAdES 1',
+                'tramites_nombre_resp1': ['Servidor Validador Fila 1', 'text', 'soloLetras', '100'], 'tramites_r1': ['Firma Responsable 1',
                 'firma'],
-                'tramites_fe_presentacion': ['S/N Fe presentación', 'select'], 'tramites_claves_asignadas': ['S/N Claves
-                asignadas', 'select'],
-                'tramites_nombre_resp2': ['Resp. Fila 2', 'text', 'soloLetras', '100'], 'tramites_r2': ['Firma PAdES 2',
+                'tramites_fe_presentacion': ['FE DE PRESENTACIÓN DE LA ENTREGA EN RECEPCIÓN DE DOCUMENTOS DEL INFORME DE FIN DE GESTIÓN', 'select'], 'tramites_claves_asignadas': ['TIENE ASIGNADO CLAVES DE ACCESO EN SU UNIDAD', 'select'],
+                'tramites_nombre_resp2': ['Servidor Validador Fila 2', 'text', 'soloLetras', '100'], 'tramites_r2': ['Firma Responsable 2',
                 'firma'],
-                'tramites_losep': ['S/N Archivo LOSEP', 'select'], 'tramites_acta_claves': ['S/N Acta Claves',
+                'tramites_losep': ['REALIZA LA ENTREGA DE ARCHIVO DE LA DOCUMENTACIÓN FÍSICA Y DIGITAL (LOSEP)', 'select'], 'tramites_acta_claves': ['REALIZÓ ACTA ENTREGA DE CLAVES DE SU UNIDAD',
                 'select'],
-                'tramites_nombre_resp3': ['Resp. Fila 3', 'text', 'soloLetras', '100'], 'tramites_r3': ['Firma PAdES 3',
+                'tramites_nombre_resp3': ['Servidor Validador Fila 3', 'text', 'soloLetras', '100'], 'tramites_r3': ['Firma Responsable 3',
                 'firma'],
-                'tramites_admin_contrato': ['S/N Admin. Contrato', 'select'], 'tramites_desc_contrato': ['Desc.
-                Contrato', 'text', '', '255'],
-                'tramites_memo': ['Memo Admin', 'text', '', '100'], 'tramites_jefe_inmediato': ['Nombre Jefe Inmediato',
+                'tramites_admin_contrato': ['Es Administrador de Contrato', 'select'], 'tramites_desc_contrato': ['Descripción del Contrato', 'text', '', '255'],
+                'tramites_memo': ['N° Memorando Designación Nuevo Administrador de Contrato', 'text', '', '100'], 'tramites_jefe_inmediato': ['Nombre del Jefe Inmediato',
                 'text', 'soloLetras', '100'],
-                'tramites_servidor_recibe': ['Servidor que Recibe', 'text', 'soloLetras', '100'], 'tramites_obs':
-                ['Observaciones', 'text', '', '255'],
-                'tramites_nombre_responsable': ['Nombre Jefe de Área', 'text', 'soloLetras', '100'], 'tramites_jefe':
-                ['Firma PAdES JEFE', 'firma'],
+                'tramites_jefe_inmediato_cargo': ['Cargo del Jefe Inmediato', 'text', '', '100'],
+                'tramites_servidor_recibe': ['Nombre del Servidor que Recibe los Trámites Pendientes', 'text', 'soloLetras', '100'],
+                'tramites_servidor_recibe_cargo': ['Cargo del Servidor que Recibe', 'text', '', '100'],
+                'tramites_obs': ['Observación', 'text', '', '255'],
+                'tramites_nombre_responsable': ['Jefe de Área', 'text', 'soloLetras', '100'], 'tramites_jefe':
+                ['Firma Electrónica Jefe', 'firma'],
 
-                'admin_es_contrato': ['S/N Es Admin. de Contrato', 'select'],
-                'admin_informe': ['S/N Entrega informe', 'select'], 'admin_nombre_resp1': ['Resp. Informe', 'text',
+                'admin_es_contrato': ['¿Es Administrador de Contrato?', 'select'],
+                'admin_informe': ['¿Realizó la Entrega del Informe?', 'select'], 'admin_nombre_resp1': ['Resp. Informe', 'text',
                 'soloLetras', '100'], 'admin_r1': ['Firma Validación Informe', 'firma'],
-                'admin_bienes': ['S/N Bienes y muebles', 'select'], 'admin_valor_bienes': ['Valor Bienes $', 'text',
-                'soloMoneda', '15'], 'admin_acta_bienes': ['N° Acta Recepción', 'text', '', '100'],
+                'admin_bienes': ['¿Entregó Bienes Muebles y Equipos?', 'select'], 'admin_valor_bienes': ['Valorización Faltante $', 'text',
+                'soloMoneda', '15'], 'admin_acta_bienes': ['Número de Acta', 'text', '', '100'],
                 'admin_nombre_resp2': ['Resp. Bienes', 'text', 'soloLetras', '100'], 'admin_r2': ['Firma Custodio
                 Bienes', 'firma'],
-                'admin_deducibles': ['S/N Deducibles', 'select'], 'admin_deducibles_valor': ['Valor Deducibles $',
+                'admin_deducibles': ['¿Tiene Valores Pendientes por Deducibles?', 'select'], 'admin_deducibles_valor': ['Valor a Descontar $',
                 'text', 'soloMoneda', '15'], 'admin_nombre_resp3': ['Resp. Deducibles', 'text', 'soloLetras', '100'],
                 'admin_r3': ['Firma Deducibles', 'firma'],
-                'admin_pasajes': ['S/N Pasajes justificar', 'select'], 'admin_pasajes_valor': ['Valor Pasajes $',
+                'admin_pasajes': ['¿Tiene Pasajes Aéreos por Justificar?', 'select'], 'admin_pasajes_valor': ['Valor a Descontar $',
                 'text', 'soloMoneda', '15'], 'admin_nombre_resp4': ['Resp. Pasajes', 'text', 'soloLetras', '100'],
                 'admin_r4': ['Firma Liquidación Pasajes', 'firma'],
-                'admin_responsable': ['Director/a Administrativo', 'text', 'soloLetras', '100'], 'admin_dir': ['Firma
+                'admin_responsable': ['Nombre del/la Director/a Administrativo/a Financiero/a', 'text', 'soloLetras', '100'], 'admin_dir': ['Firma
                 PAdES Director/a', 'firma'],
 
-                'tic_verificacion': ['S/N Verificación equipo', 'select'], 'tic_ip_fija': ['S/N Acceso IP', 'select'],
-                'tic_liberacion': ['S/N Liberación IP', 'select'], 'tic_obs1': ['Observación Equipo Informático',
+                'tic_verificacion': ['¿SE REALIZÓ LA VERIFICACIÓN DEL EQUIPO INFOMÁTICO?', 'select'], 'tic_ip_fija': ['¿Tiene Acceso a IP Fija Wi-Fi y/o Móvil?', 'select'],
+                'tic_liberacion': ['¿Se Realizó la Liberación?', 'select'], 'tic_obs1': ['Observación',
                 'text', '', '255'],
-                'tic_nombre_resp1': ['Resp. Equipos', 'text', 'soloLetras', '100'], 'tic_r1': ['Firma Control Hardware',
+                'tic_nombre_resp1': ['Validador Equipos/IP', 'text', 'soloLetras', '100'], 'tic_r1': ['Firma Control Hardware',
                 'firma'],
-                'tic_backup': ['S/N Entrega backup', 'select'], 'tic_ruta_backup': ['Ruta Backup', 'text', '', '255'],
-                'tic_nombre_resp2': ['Resp. Backup', 'text', 'soloLetras', '100'], 'tic_r2': ['Firma Control Backup',
+                'tic_backup': ['ENTREGA DEL BACKUP DE LA INFORMACIÓN GENERADA (ENTREGAR RUTA DEL BACKUP)', 'select'], 'tic_ruta_backup': ['Ruta del Backup', 'text', '', '255'],
+                'tic_nombre_resp2': ['Validador Respaldos', 'text', 'soloLetras', '100'], 'tic_r2': ['Firma Control Backup',
                 'firma'],
-                'tic_retiro_acceso': ['S/N Retiro accesos', 'select'], 'tic_cierre_correo': ['S/N Cierre Correo',
-                'select'], 'tic_esigef': ['S/N Cierre eSIGEF', 'select'],
-                'tic_quipux': ['S/N Cierre QUIPUX', 'select'], 'tic_spryn': ['S/N Cierre SPRYN', 'select'], 'tic_esbye':
-                ['S/N Cierre eSByE', 'select'],
-                'tic_nombre_resp3': ['Resp. Cuentas', 'text', 'soloLetras', '100'], 'tic_r3': ['Firma Cierre Cuentas',
+                'tic_retiro_acceso': ['RETIRO DE CONTROL DE ACCESO (CONTRASEÑAS DE SISTEMAS DE INFORMACIÓN)', 'select'], 'tic_cierre_correo': ['Correo Institucional',
+                'select'], 'tic_esigef': ['eSIGEF', 'select'],
+                'tic_quipux': ['Quipux', 'select'], 'tic_spryn': ['SPRYN', 'select'], 'tic_esbye':
+                ['eSByE', 'select'],
+                'tic_nombre_resp3': ['Validador Cierre Cuentas', 'text', 'soloLetras', '100'], 'tic_r3': ['Firma Cierre Cuentas',
                 'firma'],
-                'tic_tarjeta_cuentas': ['S/N Tarjeta Acceso', 'select'], 'tic_obs': ['Novedades TIC', 'text', '',
+                'tic_tarjeta_cuentas': ['¿SE REALIZÓ LA ENTREGA Y DESACTIVACIÓN DE LA TARJETA DE ACCESO?', 'select'], 'tic_obs': ['Observación', 'text', '',
                 '255'],
-                'tic_nombre_resp4': ['Resp. Tarjeta', 'text', 'soloLetras', '100'], 'tic_r4': ['Firma Control Accesos',
+                'tic_nombre_resp4': ['Validador Tarjetas', 'text', 'soloLetras', '100'], 'tic_r4': ['Firma Control Accesos',
                 'firma'],
-                'tic_responsable': ['Nombre Resp. TIC General', 'text', 'soloLetras', '100'], 'tic_r5': ['Firma Jefe
+                'tic_responsable': ['Responsable Unidad TICs', 'text', 'soloLetras', '100'], 'tic_r5': ['Firma Jefe
                 TIC', 'firma'],
 
-                'fin_saldos': ['S/N Saldos contables', 'select'], 'fin_saldos_valor': ['Valor Saldos $', 'text',
-                'soloMoneda', '15'], 'fin_obs1': ['Observación Saldos', 'text', '', '255'],
-                'fin_nombre_resp1': ['Resp. Saldos', 'text', 'soloLetras', '100'], 'fin_r1':
+                'fin_saldos': ['¿TIENE VALORES PENDIENTES DE PAGO POR SALDOS CONTABLES? (VALORES PENDIENTES POR VIÁTICOS, CAJA CHICA, PASAJES AÉREOS)', 'select'], 'fin_saldos_valor': ['Valor a Descontar $', 'text',
+                'soloMoneda', '15'], 'fin_obs1': ['Observación', 'text', '', '255'],
+                'fin_nombre_resp1': ['Analista Contable', 'text', 'soloLetras', '100'], 'fin_r1':
                 ['Firma Análisis Contable', 'firma'],
-                'fin_anticipo': ['S/N Anticipo sueldos', 'select'], 'fin_anticipo_valor': ['Valor Anticipo $', 'text',
-                'soloMoneda', '15'], 'fin_obs2': ['Observación Anticipos', 'text', '', '255'],
-                'fin_nombre_resp2': ['Resp. Anticipos', 'text', 'soloLetras', '100'], 'fin_r2':
+                'fin_anticipo': ['¿TIENE VALORES PENDIENTES DE PAGO POR ANTICIPO DE SUELDOS?', 'select'], 'fin_anticipo_valor': ['Valor a Descontar $', 'text',
+                'soloMoneda', '15'], 'fin_obs2': ['Observación', 'text', '', '255'],
+                'fin_nombre_resp2': ['Analista Tesorería', 'text', 'soloLetras', '100'], 'fin_r2':
                 ['Firma Tesorería', 'firma'],
-                'fin_recuperacion': ['S/N Recup. valores', 'select'], 'fin_recuperacion_valor': ['Valor Recup. $',
-                'text', 'soloMoneda', '15'], 'fin_obs3': ['Observación Recuperación', 'text', '', '255'],
-                'fin_nombre_resp3': ['Resp. Valores', 'text', 'soloLetras', '100'],
+                'fin_recuperacion': ['¿TIENE VALORES PENDIENTES DE PAGO POR RECUPERACIÓN DE VALORES?', 'select'], 'fin_recuperacion_valor': ['Valor a Descontar $',
+                'text', 'soloMoneda', '15'], 'fin_obs3': ['Observación', 'text', '', '255'],
+                'fin_nombre_resp3': ['Resp. Recuperación', 'text', 'soloLetras', '100'],
                 'fin_r3': ['Firma Recuperación', 'firma'],
-                'fin_devolucion': ['S/N Dev. muebles', 'select'], 'fin_devolucion_valor': ['Valor Devolución $', 'text',
-                'soloMoneda', '15'], 'fin_obs4': ['Observación Devolución', 'text', '', '255'],
+                'fin_devolucion': ['¿TIENE VALORES PENDIENTES DE PAGO DEVOLUCIÓN DE MUEBLES Y EQUIPOS DE OFICINA?', 'select'], 'fin_devolucion_valor': ['Valor a Descontar $', 'text',
+                'soloMoneda', '15'], 'fin_obs4': ['Observación', 'text', '', '255'],
                 'fin_nombre_resp4': ['Resp. Muebles', 'text', 'soloLetras', '100'], 'fin_r4':
                 ['Firma Ajustes Financieros', 'firma'],
-                'fin_director': ['Nombre Director/a Finan.', 'text', 'soloLetras', '100'], 'fin_dir': ['Firma PAdES
+                'fin_director': ['Nombre del/la Director/a Administrativo/a Financiero/a', 'text', 'soloLetras', '100'], 'fin_dir': ['Firma PAdES
                 Director/a', 'firma'],
 
-                'seg_archivos': ['Análisis Archivos Digitales', 'select'], 'seg_entrega_copia': ['Copia Seguridad
-                Física', 'select'], 'seg_nombre_resp1': ['Analista Seguridad', 'text', 'soloLetras', '100'], 'seg_r1':
+                'seg_archivos': ['Archivos Digitales', 'select'], 'seg_entrega_copia': ['Entrega Copia de Informe de Actividades', 'select'], 'seg_nombre_resp1': ['Analista Seguridad', 'text', 'soloLetras', '100'], 'seg_r1':
                 ['Firma Criptografía 1', 'firma'],
-                'seg_archivos_fisicos': ['Auditoría Archivos Físicos', 'select'], 'seg_verificacion_info': ['Cifrado
-                Dispositivos', 'select'], 'seg_nombre_resp2': ['Analista Seguridad', 'text', 'soloLetras', '100'],
+                'seg_archivos_fisicos': ['Archivos Físicos', 'select'], 'seg_verificacion_info': ['Verificación de la Información Institucional', 'select'], 'seg_nombre_resp2': ['Analista Seguridad', 'text', 'soloLetras', '100'],
                 'seg_r2': ['Firma Criptografía 2', 'firma'],
-                'seg_oficial': ['Oficial Seguridad de Información', 'text', 'soloLetras', '100'], 'seg_responsable':
+                'seg_oficial': ['Nombre del Oficial de Seguridad Institucional', 'text', 'soloLetras', '100'], 'seg_responsable':
                 ['Responsable Infraestructura', 'text', 'soloLetras', '100'], 'seg_oficial_sig': ['Firma Oficial EGSI',
                 'firma'],
 
-                'rrhh_capacitacion': ['S/N Capacitación', 'select'], 'rrhh_cursos_eval': ['Cursos Info', 'text', '',
+                'rrhh_capacitacion': ['EL RESPONSABLE DE CAPACITACIÓN CERTIFICA QUE EL SERVIDOR SALIENTE DEVENGÓ LOS CURSOS RECIBIDOS EN LA INSTITUCIÓN', 'select'], 'rrhh_cursos_eval': ['Cursos', 'text', '',
                 '100'], 'rrhh_resp_capacitacion': ['Resp. Capacitación', 'text', 'soloLetras', '100'], 'rrhh_r1':
                 ['Firma Capacitación', 'firma'],
-                'rrhh_evaluacion': ['S/N Evaluación', 'select'], 'rrhh_resp_evaluacion': ['Resp. Evaluación', 'text',
+                'rrhh_evaluacion': ['EL RESPONSABLE DE EVALUACIÓN DEL DESEMPEÑO CERTIFICA QUE AL SERVIDOR SALIENTE SE APLICÓ LA EVALUACIÓN DEL DESEMPEÑO DEL AÑO EN CURSO', 'select'], 'rrhh_resp_evaluacion': ['Analista Evaluación', 'text',
                 'soloLetras', '100'], 'rrhh_r2': ['Firma Evaluación', 'firma'],
-                'rrhh_viajes': ['S/N Viajes', 'select'], 'rrhh_resp_viajes': ['Resp. Viajes', 'text', 'soloLetras',
-                '100'], 'rrhh_r3': ['Firma Viajes', 'firma'],
-                'rrhh_siith': ['S/N SIITH', 'select'], 'rrhh_resp_siith': ['Resp. SIITH', 'text', 'soloLetras', '100'],
-                'rrhh_r4': ['Firma SIITH', 'firma'],
-                'rrhh_vacaciones': ['Días Vacaciones', 'text', 'soloNumeros', '3'], 'rrhh_num_certificado':
-                ['Certificado N°', 'text', '', '50'], 'rrhh_resp_vacaciones': ['Resp. Vacaciones', 'text', 'soloLetras',
+                'rrhh_viajes': ['EL RESPONSABLE DE VIAJES AL EXTERIOR CERTIFICA QUE EL SERVIDOR SALIENTE REALIZÓ LA DEVENGACIÓN Y/O CAPACITACIÓN DE LOS VIAJES REALIZADOS DURANTE EL ÚLTIMO AÑO', 'select'], 'rrhh_resp_viajes': ['Analista Comisiones', 'text', 'soloLetras',
+                '100'], 'rrhh_r3': ['Firma Comisiones', 'firma'],
+                'rrhh_siith': ['EL RESPONSABLE DEL SISTEMA INTEGRADO DE INFORMACIÓN DE TALENTO HUMANO (SIITH) CERTIFICA QUE EL SERVIDOR SALIENTE FUE DESVINCULADO DEL PUESTO QUE RENUNCIA', 'select'], 'rrhh_resp_siith': ['Analista SIITH', 'text', 'soloLetras', '100'],
+                'rrhh_r4': ['Firma Baja SIITH', 'firma'],
+                'rrhh_vacaciones': ['El Responsable de Vacaciones Certifica que el Servidor Saliente Cuenta con un Total de Días Acumulados Vacaciones', 'text', 'soloNumeros', '3'], 'rrhh_num_certificado':
+                ['Número de Certificado Emitido', 'text', '', '50'], 'rrhh_resp_vacaciones': ['Analista Vacaciones', 'text', 'soloLetras',
                 '100'], 'rrhh_r5': ['Firma Vacaciones', 'firma'],
-                'rrhh_juramentada': ['S/N Juramentada', 'select'], 'rrhh_num_declaracion': ['N° Declaración', 'text',
-                '', '100'], 'rrhh_resp_juramentada': ['Resp. Juramentada', 'text', 'soloLetras', '100'], 'rrhh_r6':
+                'rrhh_juramentada': ['ENTREGA CONSTANCIA Y DECLARACIÓN JURAMENTADA DE FIN DE GESTIÓN', 'select'], 'rrhh_num_declaracion': ['Número de Declaración Juramentada de Fin de Gestión Recibida', 'text',
+                '', '100'], 'rrhh_resp_juramentada': ['Analista Control Legal', 'text', 'soloLetras', '100'], 'rrhh_r6':
                 ['Firma Juramentada', 'firma'],
-                'rrhh_credencial': ['S/N Credencial', 'select'], 'rrhh_respaldo_cd': ['S/N Respaldo CD', 'select'],
-                'rrhh_resp_credencial2': ['Resp. Credencial', 'text',
+                'rrhh_credencial': ['ENTREGA CREDENCIAL INSTITUCIONAL, PORTA CREDENCIAL Y COLGANTE', 'select'], 'rrhh_respaldo_cd': ['ENTREGA COPIA DE INFORMACIÓN DE ACTIVIDADES Y RESPALDOS (CD)', 'select'],
+                'rrhh_resp_credencial2': ['Analista Credenciales', 'text',
                 'soloLetras', '100'], 'rrhh_r7': ['Firma Credencial', 'firma'],
-                'rrhh_acta_bienes': ['S/N Acta Bienes', 'select'], 'rrhh_ropa_trabajo': ['S/N Ropa de Trabajo', 'select'],
-                'rrhh_resp_acta': ['Resp. Acta', 'text',
+                'rrhh_acta_bienes': ['ACTA DE BIENES DEL CUSTODIO', 'select'], 'rrhh_ropa_trabajo': ['ENTREGA ROPA DE TRABAJO O EQUIPO DE PROTECCIÓN', 'select'],
+                'rrhh_resp_acta': ['Analista Dotación', 'text',
                 'soloLetras', '100'], 'rrhh_r8': ['Firma Act. Bienes', 'firma'],
-                'rrhh_director': ['Nombre Director/a RRHH', 'text', 'soloLetras', '100'], 'rrhh_dir': ['Firma Dir.
+                'rrhh_director': ['Nombre del/la Director/a de Administración de Recursos Humanos', 'text', 'soloLetras', '100'], 'rrhh_dir': ['Firma Dir.
                 RRHH', 'firma'],
 
-                'recepcion_fecha': ['Recepción: Fecha', 'date', '', ''], 'recepcion_hojas': ['Recepción: Hojas', 'text',
-                'soloNumeros', '3'], 'recepcion_servidor': ['Recepción: Servidor', 'text', 'soloLetras', '100'],
-                'recepcion_cargo': ['Recepción: Cargo', 'text', 'soloLetras', '100'], 'recepcion_r1': ['Firma
+                'recepcion_fecha': ['Fecha de Entrega del Paz y Salvo', 'date', '', ''], 'recepcion_hojas': ['N° Hojas Recibidas', 'text',
+                'soloNumeros', '3'], 'recepcion_servidor': ['Nombre Servidor/a Quien Recibe', 'text', 'soloLetras', '100'],
+                'recepcion_cargo': ['Cargo Servidor/a Quien Recibe', 'text', 'soloLetras', '100'], 'recepcion_r1': ['Firma
                 Recepción', 'firma'],
-                'cedula_firmante': ['Cédula Firmante', 'text', 'validarCedula', '10'], 'fecha_firma': ['Fecha
-                Ejecución', 'date', '', ''], 'servidor_saliente': ['Firma FINAL Servidor', 'firma']
+                'cedula_firmante': ['C.C.', 'text', 'validarCedula', '10'], 'fecha_firma': ['Fecha',
+                'date', '', ''], 'servidor_saliente': ['Firma FINAL Servidor', 'firma']
                 } %}
 
                 {% for campo in campos_asignados %}
