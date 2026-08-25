@@ -408,17 +408,17 @@
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos"
                                                 value="direccion" class="form-check-input me-1"> Dirección</div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos"
-                                                value="numero_domicilio" class="form-check-input me-1"> Telf Domicilio
+                                                value="numero_domicilio" class="form-check-input me-1"> Número Domicilio
                                         </div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos" value="celular"
-                                                class="form-check-input me-1"> Celular</div>
+                                                class="form-check-input me-1"> Número Celular</div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos"
-                                                value="emergencia" class="form-check-input me-1"> Contacto Emergencia
+                                                value="emergencia" class="form-check-input me-1"> Núm. Contacto Emergencia
                                         </div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos" value="email1"
-                                                class="form-check-input me-1"> Email Principal</div>
+                                                class="form-check-input me-1"> Email (1)</div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos" value="email2"
-                                                class="form-check-input me-1"> Email 2</div>
+                                                class="form-check-input me-1"> Email (2)</div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos"
                                                 value="provincia" class="form-check-input me-1"> Provincia</div>
                                         <div class="col-md-4 mb-2"><input type="checkbox" name="campos" value="canton"
@@ -972,10 +972,10 @@
                 {% if s12_show.val %}
                 <div class="doc-section-head">👤 1. Datos Personales y Unidad</div>
                 <div class="doc-fields-grid">
-                    {{ input_text('nombres_apellidos', 'Nombres y Apellidos Completos', 'text', 'span-2', '100',
+                    {{ input_text('nombres_apellidos', 'Nombres y Apellidos', 'text', 'span-2', '100',
                     'soloLetras', datos.get('nombres_apellidos', solicitud.ex_funcionario.nombres ~ ' ' ~
                     solicitud.ex_funcionario.apellidos)) }}
-                    {{ input_text('cedula', 'Cédula de Ciudadanía', 'text', '', '10', 'validarCedula',
+                    {{ input_text('cedula', 'Cédula de Ciudadanía / Pasaporte', 'text', '', '10', 'validarCedula',
                     solicitud.ex_funcionario.cedula) }}
 
                     {% if admin or 'modalidad' in asignados %}
@@ -1002,22 +1002,22 @@
                     </div>
                     {% endif %}
 
-                    {{ input_text('fecha_ingreso', 'Fecha de Ingreso', 'date', '', '', 'validarFechas',
+                    {{ input_text('fecha_ingreso', 'Fecha Ingreso', 'date', '', '', 'validarFechas',
                     datos.get('fecha_ingreso', '')) }}
-                    {{ input_text('fecha_salida', 'Fecha de Salida', 'date', '', '', 'validarFechas',
+                    {{ input_text('fecha_salida', 'Fecha Salida', 'date', '', '', 'validarFechas',
                     datos.get('fecha_salida', '')) }}
                     {{ input_text('direccion', 'Dirección Domiciliaria', 'text', 'span-2', '200', '',
                     datos.get('direccion', '')) }}
 
-                    {{ input_text('numero_domicilio', 'Teléfono Fijo Casa', 'text', '', '9', 'validarConvencional',
+                    {{ input_text('numero_domicilio', 'Número Domicilio', 'text', '', '9', 'validarConvencional',
                     datos.get('numero_domicilio', '')) }}
-                    {{ input_text('celular', 'Teléfono Celular', 'text', '', '10', 'validarCelular',
+                    {{ input_text('celular', 'Número Celular', 'text', '', '10', 'validarCelular',
                     datos.get('celular', '')) }}
-                    {{ input_text('emergencia', 'Contacto de Emergencia', 'text', 'span-2', '10', 'validarCelular',
+                    {{ input_text('emergencia', 'Número Contacto Emergencia', 'text', 'span-2', '10', 'validarCelular',
                     datos.get('emergencia', '')) }}
-                    {{ input_text('email1', 'Correo Principal', 'email', '', '100', 'validarEmail', datos.get('email1',
+                    {{ input_text('email1', 'Email (1)', 'email', '', '100', 'validarEmail', datos.get('email1',
                     '')) }}
-                    {{ input_text('email2', 'Correo Alternativo', 'email', '', '100', 'validarEmail',
+                    {{ input_text('email2', 'Email (2)', 'email', '', '100', 'validarEmail',
                     datos.get('email2', '')) }}
 
                     {% if admin or 'provincia' in asignados %}
@@ -1055,7 +1055,7 @@
 
                     {% if admin or 'lugar_trabajo' in asignados %}
                     <div class="input-group">
-                        <label>Lugar de Dependencia</label>
+                        <label>Lugar de Trabajo</label>
                         {% if admin %}<div class="mb-1" style="font-size: 0.75rem;">{% if asig_dict.get('lugar_trabajo')
                             %}<span class="badge bg-success"><i class="bi bi-person-check-fill"></i> {{
                                 asig_dict['lugar_trabajo'] }}</span>{% else %}<span
@@ -1075,7 +1075,7 @@
 
                     {% if admin or 'grupo_ocupacional' in asignados %}
                     <div class="input-group">
-                        <label>Grupo Ocupacional LOSEP</label>
+                        <label>Grupo Ocupacional</label>
                         {% if admin %}<div class="mb-1" style="font-size: 0.75rem;">{% if
                             asig_dict.get('grupo_ocupacional') %}<span class="badge bg-success"><i
                                     class="bi bi-person-check-fill"></i> {{ asig_dict['grupo_ocupacional'] }}</span>{%
@@ -1098,9 +1098,9 @@
                     </div>
                     {% endif %}
 
-                    {{ input_text('unidad', 'Dirección Técnica / Unidad', 'text', 'span-2', '100', 'validarUnidad',
+                    {{ input_text('unidad', 'Dirección / Unidad', 'text', 'span-2', '100', 'validarUnidad',
                     datos.get('unidad', '')) }}
-                    {{ input_text('cargo', 'Cargo Institucional Desempeñado', 'text', 'span-2', '100', '',
+                    {{ input_text('cargo', 'Cargo Desempeñado', 'text', 'span-2', '100', '',
                     datos.get('cargo', '')) }}
                 </div>
                 {% endif %}
@@ -1118,49 +1118,49 @@
                 {% if s3_show.val %}
                 <div class="doc-section-head mt-4">📋 3. Gestión Documental, Archivo y Trámites</div>
                 <div class="doc-fields-grid">
-                    {{ select_sino('tramites_informe', '¿Entrega Informe de Fin de Gestión?', '',
+                    {{ select_sino('tramites_informe', 'ENTREGA INFORME DE FIN DE GESTIÓN CON DETALLE DE ACTIVIDADES EJECUTADAS Y PENDIENTES (NO REQUIERE APROBACIÓN)', '',
                     datos.get('tramites_informe', '')) }}
-                    {{ select_sino('tramites_quipux_cero', '¿Bandeja de QUIPUX en Cero?', '',
+                    {{ select_sino('tramites_quipux_cero', 'ENTREGA LOS TRÁMITES ASIGNADOS EN EL SISTEMA DE GESTIÓN DOCUMENTAL QUIPUX (BANDEJA EN CERO)', '',
                     datos.get('tramites_quipux_cero', '')) }}
                     {{ input_text('tramites_nombre_resp1', 'Servidor Validador Fila 1', 'text', 'span-2', '100',
                     'soloLetras', datos.get('tramites_nombre_resp1', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tramites_r1', 'Firma Responsable 1',
                         datos.get('tramites_nombre_resp1', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tramites_fe_presentacion', '¿Posee Fe de Presentación?', '',
+                    {{ select_sino('tramites_fe_presentacion', 'FE DE PRESENTACIÓN DE LA ENTREGA EN RECEPCIÓN DE DOCUMENTOS DEL INFORME DE FIN DE GESTIÓN', '',
                     datos.get('tramites_fe_presentacion', '')) }}
-                    {{ select_sino('tramites_claves_asignadas', '¿Retiro de Claves de Sistemas?', '',
+                    {{ select_sino('tramites_claves_asignadas', 'TIENE ASIGNADO CLAVES DE ACCESO EN SU UNIDAD', '',
                     datos.get('tramites_claves_asignadas', '')) }}
                     {{ input_text('tramites_nombre_resp2', 'Servidor Validador Fila 2', 'text', 'span-2', '100',
                     'soloLetras', datos.get('tramites_nombre_resp2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tramites_r2', 'Firma Responsable 2',
                         datos.get('tramites_nombre_resp2', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tramites_losep', '¿Entrega de Expediente Físico LOSEP?', '',
+                    {{ select_sino('tramites_losep', 'REALIZA LA ENTREGA DE ARCHIVO DE LA DOCUMENTACIÓN FÍSICA Y DIGITAL (LOSEP)', '',
                     datos.get('tramites_losep', '')) }}
-                    {{ select_sino('tramites_acta_claves', '¿Acta de Entrega de Claves?', '',
+                    {{ select_sino('tramites_acta_claves', 'REALIZÓ ACTA ENTREGA DE CLAVES DE SU UNIDAD', '',
                     datos.get('tramites_acta_claves', '')) }}
                     {{ input_text('tramites_nombre_resp3', 'Servidor Validador Fila 3', 'text', 'span-2', '100',
                     'soloLetras', datos.get('tramites_nombre_resp3', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tramites_r3', 'Firma Responsable 3',
                         datos.get('tramites_nombre_resp3', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tramites_admin_contrato', '¿Fue Administrador de Contratos?', '',
+                    {{ select_sino('tramites_admin_contrato', 'Es Administrador de Contrato', '',
                     datos.get('tramites_admin_contrato', '')) }}
-                    {{ input_text('tramites_desc_contrato', 'Detalle de Contratos a Cargo', 'text', '', '255', '',
+                    {{ input_text('tramites_desc_contrato', 'Descripción del Contrato', 'text', '', '255', '',
                     datos.get('tramites_desc_contrato', '')) }}
-                    {{ input_text('tramites_memo', 'N° Memorando de Relevo', 'text', 'span-2', '100', '',
+                    {{ input_text('tramites_memo', 'N° Memorando Designación Nuevo Administrador de Contrato', 'text', 'span-2', '100', '',
                     datos.get('tramites_memo', '')) }}
 
                     {{ input_text('tramites_jefe_inmediato', 'Nombre del Jefe Inmediato', 'text', '', '100',
                     'soloLetras', datos.get('tramites_jefe_inmediato', '')) }}
                     {{ input_text('tramites_jefe_inmediato_cargo', 'Cargo del Jefe Inmediato', 'text', '', '100', '',
                     datos.get('tramites_jefe_inmediato_cargo', '')) }}
-                    {{ input_text('tramites_servidor_recibe', 'Servidor que Recibe los Trámites Pendientes', 'text', '', '100',
+                    {{ input_text('tramites_servidor_recibe', 'Nombre del Servidor que Recibe los Trámites Pendientes', 'text', '', '100',
                     'soloLetras', datos.get('tramites_servidor_recibe', '')) }}
                     {{ input_text('tramites_servidor_recibe_cargo', 'Cargo del Servidor que Recibe', 'text', '', '100', '',
                     datos.get('tramites_servidor_recibe_cargo', '')) }}
-                    {{ input_text('tramites_obs', 'Observaciones', 'text', 'span-2', '255', '',
+                    {{ input_text('tramites_obs', 'Observación', 'text', 'span-2', '255', '',
                     datos.get('tramites_obs', '')) }}
                     {{ input_text('tramites_nombre_responsable', 'Jefe de Área', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('tramites_nombre_responsable', '')) }}
@@ -1193,31 +1193,31 @@
                     '')) }}
                     {{ input_text('admin_valor_bienes', 'Valorización Faltante $', 'text', '', '15', 'soloMoneda',
                     datos.get('admin_valor_bienes', '')) }}
-                    {{ input_text('admin_acta_bienes', 'N° Acta Recepción', 'text', 'span-2', '100', '',
+                    {{ input_text('admin_acta_bienes', 'Número de Acta', 'text', 'span-2', '100', '',
                     datos.get('admin_acta_bienes', '')) }}
                     {{ input_text('admin_nombre_resp2', 'Resp. Bienes', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('admin_nombre_resp2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('admin_r2', 'Firma Custodio Bienes',
                         datos.get('admin_nombre_resp2', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('admin_deducibles', '¿Registra Valores Deducibles?', '',
+                    {{ select_sino('admin_deducibles', '¿Tiene Valores Pendientes por Deducibles?', '',
                     datos.get('admin_deducibles', '')) }}
-                    {{ input_text('admin_deducibles_valor', 'Monto a Descontar $', 'text', '', '15', 'soloMoneda',
+                    {{ input_text('admin_deducibles_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('admin_deducibles_valor', '')) }}
                     {{ input_text('admin_nombre_resp3', 'Resp. Deducibles', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('admin_nombre_resp3', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('admin_r3', 'Firma Deducibles',
                         datos.get('admin_nombre_resp3', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('admin_pasajes', '¿Liquidó Pasajes Aéreos?', '', datos.get('admin_pasajes', '')) }}
-                    {{ input_text('admin_pasajes_valor', 'Monto Pasajes $', 'text', '', '15', 'soloMoneda',
+                    {{ select_sino('admin_pasajes', '¿Tiene Pasajes Aéreos por Justificar?', '', datos.get('admin_pasajes', '')) }}
+                    {{ input_text('admin_pasajes_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('admin_pasajes_valor', '')) }}
                     {{ input_text('admin_nombre_resp4', 'Resp. Pasajes', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('admin_nombre_resp4', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('admin_r4', 'Firma Liquidación Pasajes',
                         datos.get('admin_nombre_resp4', 'SERVIDOR')) }}</div>
 
-                    {{ input_text('admin_responsable', 'Director/a Administrativo/a', 'text', 'span-2', '100',
+                    {{ input_text('admin_responsable', 'Nombre del/la Director/a Administrativo/a Financiero/a', 'text', 'span-2', '100',
                     'soloLetras', datos.get('admin_responsable', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('admin_dir', 'Firma PAdES Director/a',
                         datos.get('admin_responsable', 'DIRECTOR/A')) }}</div>
@@ -1235,41 +1235,41 @@
                 {% if s5_show.val %}
                 <div class="doc-section-head mt-4">💻 5. Gestión de Tecnologías (TICs)</div>
                 <div class="doc-fields-grid">
-                    {{ select_sino('tic_verificacion', '¿Inspección Física de Equipo?', '',
+                    {{ select_sino('tic_verificacion', '¿SE REALIZÓ LA VERIFICACIÓN DEL EQUIPO INFOMÁTICO?', '',
                     datos.get('tic_verificacion', '')) }}
-                    {{ select_sino('tic_ip_fija', '¿Desvinculación IP?', '', datos.get('tic_ip_fija', '')) }}
-                    {{ select_sino('tic_liberacion', '¿Liberación Accesos?', '', datos.get('tic_liberacion', '')) }}
+                    {{ select_sino('tic_ip_fija', '¿Tiene Acceso a IP Fija Wi-Fi y/o Móvil?', '', datos.get('tic_ip_fija', '')) }}
+                    {{ select_sino('tic_liberacion', '¿Se Realizó la Liberación?', '', datos.get('tic_liberacion', '')) }}
                     {{ input_text('tic_nombre_resp1', 'Validador Equipos/IP', 'text', '', '100', 'soloLetras',
                     datos.get('tic_nombre_resp1', '')) }}
-                    {{ input_text('tic_obs1', 'Observación Equipo Informático', 'text', 'span-2', '255', '',
+                    {{ input_text('tic_obs1', 'Observación', 'text', 'span-2', '255', '',
                     datos.get('tic_obs1', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tic_r1', 'Firma Control Hardware',
                         datos.get('tic_nombre_resp1', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tic_backup', '¿Hizo Entrega de Respaldos?', '', datos.get('tic_backup', '')) }}
-                    {{ input_text('tic_ruta_backup', 'Ruta Servidor Institucional', 'text', '', '255', '',
+                    {{ select_sino('tic_backup', 'ENTREGA DEL BACKUP DE LA INFORMACIÓN GENERADA (ENTREGAR RUTA DEL BACKUP)', '', datos.get('tic_backup', '')) }}
+                    {{ input_text('tic_ruta_backup', 'Ruta del Backup', 'text', '', '255', '',
                     datos.get('tic_ruta_backup', '')) }}
                     {{ input_text('tic_nombre_resp2', 'Validador Respaldos', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('tic_nombre_resp2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tic_r2', 'Firma Control Backup',
                         datos.get('tic_nombre_resp2', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tic_retiro_acceso', '¿Revocación Credenciales Red?', '',
+                    {{ select_sino('tic_retiro_acceso', 'RETIRO DE CONTROL DE ACCESO (CONTRASEÑAS DE SISTEMAS DE INFORMACIÓN)', '',
                     datos.get('tic_retiro_acceso', '')) }}
-                    {{ select_sino('tic_cierre_correo', '¿Baja Correo Institucional?', '',
+                    {{ select_sino('tic_cierre_correo', 'Correo Institucional', '',
                     datos.get('tic_cierre_correo', '')) }}
-                    {{ select_sino('tic_esigef', '¿Bloqueo eSIGEF?', '', datos.get('tic_esigef', '')) }}
-                    {{ select_sino('tic_quipux', '¿Desactivación QUIPUX?', '', datos.get('tic_quipux', '')) }}
-                    {{ select_sino('tic_spryn', '¿Baja SPRYN?', '', datos.get('tic_spryn', '')) }}
-                    {{ select_sino('tic_esbye', '¿Baja eSByE?', '', datos.get('tic_esbye', '')) }}
+                    {{ select_sino('tic_esigef', 'eSIGEF', '', datos.get('tic_esigef', '')) }}
+                    {{ select_sino('tic_quipux', 'Quipux', '', datos.get('tic_quipux', '')) }}
+                    {{ select_sino('tic_spryn', 'SPRYN', '', datos.get('tic_spryn', '')) }}
+                    {{ select_sino('tic_esbye', 'eSByE', '', datos.get('tic_esbye', '')) }}
                     {{ input_text('tic_nombre_resp3', 'Validador Cierre Cuentas', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('tic_nombre_resp3', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tic_r3', 'Firma Cierre Cuentas',
                         datos.get('tic_nombre_resp3', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('tic_tarjeta_cuentas', '¿Entrega Tarjeta Acceso?', '',
+                    {{ select_sino('tic_tarjeta_cuentas', '¿SE REALIZÓ LA ENTREGA Y DESACTIVACIÓN DE LA TARJETA DE ACCESO?', '',
                     datos.get('tic_tarjeta_cuentas', '')) }}
-                    {{ input_text('tic_obs', 'Novedades TIC', 'text', '', '255', '', datos.get('tic_obs', '')) }}
+                    {{ input_text('tic_obs', 'Observación', 'text', '', '255', '', datos.get('tic_obs', '')) }}
                     {{ input_text('tic_nombre_resp4', 'Validador Tarjetas', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('tic_nombre_resp4', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('tic_r4', 'Firma Control Accesos',
@@ -1293,48 +1293,48 @@
                 {% if s6_show.val %}
                 <div class="doc-section-head mt-4">💰 6. Gestión Financiera</div>
                 <div class="doc-fields-grid">
-                    {{ select_sino('fin_saldos', '¿Saldos Pendientes?', '', datos.get('fin_saldos', '')) }}
-                    {{ input_text('fin_saldos_valor', 'Monto Saldo $', 'text', '', '15', 'soloMoneda',
+                    {{ select_sino('fin_saldos', '¿TIENE VALORES PENDIENTES DE PAGO POR SALDOS CONTABLES? (VALORES PENDIENTES POR VIÁTICOS, CAJA CHICA, PASAJES AÉREOS)', '', datos.get('fin_saldos', '')) }}
+                    {{ input_text('fin_saldos_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('fin_saldos_valor', '')) }}
-                    {{ input_text('fin_obs1', 'Observación Saldos', 'text', 'span-2', '255', '', datos.get('fin_obs1',
+                    {{ input_text('fin_obs1', 'Observación', 'text', 'span-2', '255', '', datos.get('fin_obs1',
                     '')) }}
                     {{ input_text('fin_nombre_resp1', 'Analista Contable', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('fin_nombre_resp1', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('fin_r1', 'Firma Análisis Contable',
                         datos.get('fin_nombre_resp1', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('fin_anticipo', '¿Anticipos Activos?', '', datos.get('fin_anticipo', '')) }}
-                    {{ input_text('fin_anticipo_valor', 'Saldo Anticipo $', 'text', '', '15', 'soloMoneda',
+                    {{ select_sino('fin_anticipo', '¿TIENE VALORES PENDIENTES DE PAGO POR ANTICIPO DE SUELDOS?', '', datos.get('fin_anticipo', '')) }}
+                    {{ input_text('fin_anticipo_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('fin_anticipo_valor', '')) }}
-                    {{ input_text('fin_obs2', 'Observación Anticipos', 'text', 'span-2', '255', '',
+                    {{ input_text('fin_obs2', 'Observación', 'text', 'span-2', '255', '',
                     datos.get('fin_obs2', '')) }}
                     {{ input_text('fin_nombre_resp2', 'Analista Tesorería', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('fin_nombre_resp2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('fin_r2', 'Firma Tesorería', datos.get('fin_nombre_resp2',
                         'SERVIDOR')) }}</div>
 
-                    {{ select_sino('fin_recuperacion', '¿Garantías/Recuperación?', '', datos.get('fin_recuperacion',
+                    {{ select_sino('fin_recuperacion', '¿TIENE VALORES PENDIENTES DE PAGO POR RECUPERACIÓN DE VALORES?', '', datos.get('fin_recuperacion',
                     '')) }}
-                    {{ input_text('fin_recuperacion_valor', 'Valor a Recuperar $', 'text', '', '15', 'soloMoneda',
+                    {{ input_text('fin_recuperacion_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('fin_recuperacion_valor', '')) }}
-                    {{ input_text('fin_obs3', 'Observación Recuperación', 'text', 'span-2', '255', '',
+                    {{ input_text('fin_obs3', 'Observación', 'text', 'span-2', '255', '',
                     datos.get('fin_obs3', '')) }}
                     {{ input_text('fin_nombre_resp3', 'Resp. Recuperación', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('fin_nombre_resp3', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('fin_r3', 'Firma Recuperación',
                         datos.get('fin_nombre_resp3', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('fin_devolucion', '¿Liquidación Activos?', '', datos.get('fin_devolucion', '')) }}
-                    {{ input_text('fin_devolucion_valor', 'Monto Ajuste $', 'text', '', '15', 'soloMoneda',
+                    {{ select_sino('fin_devolucion', '¿TIENE VALORES PENDIENTES DE PAGO DEVOLUCIÓN DE MUEBLES Y EQUIPOS DE OFICINA?', '', datos.get('fin_devolucion', '')) }}
+                    {{ input_text('fin_devolucion_valor', 'Valor a Descontar $', 'text', '', '15', 'soloMoneda',
                     datos.get('fin_devolucion_valor', '')) }}
-                    {{ input_text('fin_obs4', 'Observación Devolución', 'text', 'span-2', '255', '',
+                    {{ input_text('fin_obs4', 'Observación', 'text', 'span-2', '255', '',
                     datos.get('fin_obs4', '')) }}
                     {{ input_text('fin_nombre_resp4', 'Resp. Ajustes', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('fin_nombre_resp4', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('fin_r4', 'Firma Ajustes Financieros',
                         datos.get('fin_nombre_resp4', 'SERVIDOR')) }}</div>
 
-                    {{ input_text('fin_director', 'Director/a Financiero/a', 'text', 'span-2', '100', 'soloLetras',
+                    {{ input_text('fin_director', 'Nombre del/la Director/a Administrativo/a Financiero/a', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('fin_director', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('fin_dir', 'Firma PAdES Director/a',
                         datos.get('fin_director', 'DIRECTOR/A')) }}</div>
@@ -1351,25 +1351,25 @@
                 {% if s7_show.val %}
                 <div class="doc-section-head mt-4">🔒 7. Seguridad de la Información (EGSI)</div>
                 <div class="doc-fields-grid">
-                    {{ select_sino('seg_archivos', '¿Análisis Archivos Digitales?', '', datos.get('seg_archivos', ''))
+                    {{ select_sino('seg_archivos', 'Archivos Digitales', '', datos.get('seg_archivos', ''))
                     }}
-                    {{ select_sino('seg_entrega_copia', '¿Copia Seguridad Física?', '', datos.get('seg_entrega_copia',
+                    {{ select_sino('seg_entrega_copia', 'Entrega Copia de Informe de Actividades', '', datos.get('seg_entrega_copia',
                     '')) }}
                     {{ input_text('seg_nombre_resp1', 'Analista Seguridad', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('seg_nombre_resp1', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('seg_r1', 'Firma Criptografía 1',
                         datos.get('seg_nombre_resp1', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('seg_archivos_fisicos', '¿Auditoría Archivos Físicos?', '',
+                    {{ select_sino('seg_archivos_fisicos', 'Archivos Físicos', '',
                     datos.get('seg_archivos_fisicos', '')) }}
-                    {{ select_sino('seg_verificacion_info', '¿Cifrado Dispositivos Egresados?', '',
+                    {{ select_sino('seg_verificacion_info', 'Verificación de la Información Institucional', '',
                     datos.get('seg_verificacion_info', '')) }}
                     {{ input_text('seg_nombre_resp2', 'Analista Seguridad', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('seg_nombre_resp2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('seg_r2', 'Firma Criptografía 2',
                         datos.get('seg_nombre_resp2', 'SERVIDOR')) }}</div>
 
-                    {{ input_text('seg_oficial', 'Oficial Seguridad de Información', 'text', 'span-2', '100',
+                    {{ input_text('seg_oficial', 'Nombre del Oficial de Seguridad Institucional', 'text', 'span-2', '100',
                     'soloLetras', datos.get('seg_oficial', '')) }}
                     {{ input_text('seg_responsable', 'Responsable Infraestructura', 'text', 'span-2', '100',
                     'soloLetras', datos.get('seg_responsable', '')) }}
@@ -1391,71 +1391,71 @@
                 {% if s8_show.val %}
                 <div class="doc-section-head mt-4">👥 8. Recursos Humanos</div>
                 <div class="doc-fields-grid">
-                    {{ select_sino('rrhh_capacitacion', '¿Cumplió Cursos Obligatorios?', '',
+                    {{ select_sino('rrhh_capacitacion', 'EL RESPONSABLE DE CAPACITACIÓN CERTIFICA QUE EL SERVIDOR SALIENTE DEVENGÓ LOS CURSOS RECIBIDOS EN LA INSTITUCIÓN', '',
                     datos.get('rrhh_capacitacion', '')) }}
-                    {{ input_text('rrhh_cursos_eval', 'N° Horas / Calificación', 'text', '', '100', '',
+                    {{ input_text('rrhh_cursos_eval', 'Cursos', 'text', '', '100', '',
                     datos.get('rrhh_cursos_eval', '')) }}
                     {{ input_text('rrhh_resp_capacitacion', 'Analista Capacitación', 'text', 'span-2', '100',
                     'soloLetras', datos.get('rrhh_resp_capacitacion', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r1', 'Firma Capacitación',
                         datos.get('rrhh_resp_capacitacion', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_evaluacion', '¿Evaluación de Desempeño?', '', datos.get('rrhh_evaluacion', ''))
+                    {{ select_sino('rrhh_evaluacion', 'EL RESPONSABLE DE EVALUACIÓN DEL DESEMPEÑO CERTIFICA QUE AL SERVIDOR SALIENTE SE APLICÓ LA EVALUACIÓN DEL DESEMPEÑO DEL AÑO EN CURSO', '', datos.get('rrhh_evaluacion', ''))
                     }}
                     {{ input_text('rrhh_resp_evaluacion', 'Analista Evaluación', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_resp_evaluacion', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r2', 'Firma Evaluación',
                         datos.get('rrhh_resp_evaluacion', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_viajes', '¿Liquidó Viáticos?', '', datos.get('rrhh_viajes', '')) }}
+                    {{ select_sino('rrhh_viajes', 'EL RESPONSABLE DE VIAJES AL EXTERIOR CERTIFICA QUE EL SERVIDOR SALIENTE REALIZÓ LA DEVENGACIÓN Y/O CAPACITACIÓN DE LOS VIAJES REALIZADOS DURANTE EL ÚLTIMO AÑO', '', datos.get('rrhh_viajes', '')) }}
                     {{ input_text('rrhh_resp_viajes', 'Analista Comisiones', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_resp_viajes', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r3', 'Firma Comisiones', datos.get('rrhh_resp_viajes',
                         'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_siith', '¿Acción Personal SIITH?', '', datos.get('rrhh_siith', '')) }}
+                    {{ select_sino('rrhh_siith', 'EL RESPONSABLE DEL SISTEMA INTEGRADO DE INFORMACIÓN DE TALENTO HUMANO (SIITH) CERTIFICA QUE EL SERVIDOR SALIENTE FUE DESVINCULADO DEL PUESTO QUE RENUNCIA', '', datos.get('rrhh_siith', '')) }}
                     {{ input_text('rrhh_resp_siith', 'Analista SIITH', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_resp_siith', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r4', 'Firma Baja SIITH', datos.get('rrhh_resp_siith',
                         'SERVIDOR')) }}</div>
 
-                    {{ input_text('rrhh_vacaciones', 'Saldo Días Vacaciones', 'text', '', '3', 'soloNumeros',
+                    {{ input_text('rrhh_vacaciones', 'El Responsable de Vacaciones Certifica que el Servidor Saliente Cuenta con un Total de Días Acumulados Vacaciones', 'text', '', '3', 'soloNumeros',
                     datos.get('rrhh_vacaciones', '')) }}
-                    {{ input_text('rrhh_num_certificado', 'N° Certificado', 'text', '', '50', '',
+                    {{ input_text('rrhh_num_certificado', 'Número de Certificado Emitido', 'text', '', '50', '',
                     datos.get('rrhh_num_certificado', '')) }}
                     {{ input_text('rrhh_resp_vacaciones', 'Analista Vacaciones', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_resp_vacaciones', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r5', 'Firma Vacaciones',
                         datos.get('rrhh_resp_vacaciones', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_juramentada', '¿Declaración Juramentada?', '', datos.get('rrhh_juramentada',
+                    {{ select_sino('rrhh_juramentada', 'ENTREGA CONSTANCIA Y DECLARACIÓN JURAMENTADA DE FIN DE GESTIÓN', '', datos.get('rrhh_juramentada',
                     '')) }}
-                    {{ input_text('rrhh_num_declaracion', 'N° CGR', 'text', '', '100', '',
+                    {{ input_text('rrhh_num_declaracion', 'Número de Declaración Juramentada de Fin de Gestión Recibida', 'text', '', '100', '',
                     datos.get('rrhh_num_declaracion', '')) }}
                     {{ input_text('rrhh_resp_juramentada', 'Analista Control Legal', 'text', 'span-2', '100',
                     'soloLetras', datos.get('rrhh_resp_juramentada', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r6', 'Firma Declaraciones',
                         datos.get('rrhh_resp_juramentada', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_credencial', '¿Devolución Credencial?', '', datos.get('rrhh_credencial', ''))
+                    {{ select_sino('rrhh_credencial', 'ENTREGA CREDENCIAL INSTITUCIONAL, PORTA CREDENCIAL Y COLGANTE', '', datos.get('rrhh_credencial', ''))
                     }}
-                    {{ select_sino('rrhh_respaldo_cd', '¿Entrega Copia de Actividades y Respaldos (CD)?', '',
+                    {{ select_sino('rrhh_respaldo_cd', 'ENTREGA COPIA DE INFORMACIÓN DE ACTIVIDADES Y RESPALDOS (CD)', '',
                     datos.get('rrhh_respaldo_cd', '')) }}
                     {{ input_text('rrhh_resp_credencial2', 'Analista Credenciales', 'text', 'span-2', '100',
                     'soloLetras', datos.get('rrhh_resp_credencial2', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r7', 'Firma Credenciales',
                         datos.get('rrhh_resp_credencial2', 'SERVIDOR')) }}</div>
 
-                    {{ select_sino('rrhh_acta_bienes', '¿Acta de Bienes del Custodio?', '',
+                    {{ select_sino('rrhh_acta_bienes', 'ACTA DE BIENES DEL CUSTODIO', '',
                     datos.get('rrhh_acta_bienes', '')) }}
-                    {{ select_sino('rrhh_ropa_trabajo', '¿Entrega Ropa de Trabajo o Equipo de Protección?', '',
+                    {{ select_sino('rrhh_ropa_trabajo', 'ENTREGA ROPA DE TRABAJO O EQUIPO DE PROTECCIÓN', '',
                     datos.get('rrhh_ropa_trabajo', '')) }}
                     {{ input_text('rrhh_resp_acta', 'Analista Dotación', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_resp_acta', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_r8', 'Firma Act. Bienes', datos.get('rrhh_resp_acta',
                         'SERVIDOR')) }}</div>
 
-                    {{ input_text('rrhh_director', 'Nombre Director/a RRHH', 'text', 'span-2', '100', 'soloLetras',
+                    {{ input_text('rrhh_director', 'Nombre del/la Director/a de Administración de Recursos Humanos', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('rrhh_director', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('rrhh_dir', 'Firma Dir. RRHH', datos.get('rrhh_director',
                         'DIRECTOR/A')) }}</div>
@@ -1471,13 +1471,13 @@
                 {% if s9_show.val %}
                 <div class="doc-section-head mt-4">📬 9. Ventanilla de Recepción</div>
                 <div class="doc-fields-grid">
-                    {{ input_text('recepcion_fecha', 'Fecha y Hora Ingreso', 'date', '', '', '',
+                    {{ input_text('recepcion_fecha', 'Fecha de Entrega del Paz y Salvo', 'date', '', '', '',
                     datos.get('recepcion_fecha', '')) }}
-                    {{ input_text('recepcion_hojas', 'Hojas Útiles', 'text', '', '3', 'soloNumeros',
+                    {{ input_text('recepcion_hojas', 'N° Hojas Recibidas', 'text', '', '3', 'soloNumeros',
                     datos.get('recepcion_hojas', '')) }}
-                    {{ input_text('recepcion_servidor', 'Servidor de Ventanilla', 'text', 'span-2', '100', 'soloLetras',
+                    {{ input_text('recepcion_servidor', 'Nombre Servidor/a Quien Recibe', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('recepcion_servidor', '')) }}
-                    {{ input_text('recepcion_cargo', 'Cargo Administrativo', 'text', 'span-2', '100', 'soloLetras',
+                    {{ input_text('recepcion_cargo', 'Cargo Servidor/a Quien Recibe', 'text', 'span-2', '100', 'soloLetras',
                     datos.get('recepcion_cargo', '')) }}
                     <div class="span-2 d-flex">{{ firma_box('recepcion_r1', 'Firma Recepción',
                         datos.get('recepcion_servidor', 'SERVIDOR')) }}</div>
@@ -1493,15 +1493,15 @@
                 <div class="doc-section-head mt-4" style="background: linear-gradient(135deg, #4c1d95, #7c3aed);">✍️ 10.
                     Declaración Legal Final</div>
                 <div class="doc-fields-grid" style="background: #faf5ff;">
-                    {{ input_text('cedula_firmante', 'Cédula Firmante', 'text', '', '10', 'validarCedula',
+                    {{ input_text('cedula_firmante', 'C.C.', 'text', '', '10', 'validarCedula',
                     solicitud.ex_funcionario.cedula) }}
-                    {{ input_text('fecha_firma', 'Fecha Ejecución', 'date', '', '', '', datos.get('fecha_firma', '')) }}
+                    {{ input_text('fecha_firma', 'Fecha', 'date', '', '', '', datos.get('fecha_firma', '')) }}
 
                     <div class="input-group span-2 mt-2">
                         <div
                             style="border: 1px solid #7c3aed; border-radius: 8px; padding: 15px; text-align: center; background: #fff;">
-                            <h6 style="color: #6d28d9; font-weight: 800; font-size: 11px; margin-bottom: 12px;">FIRMA DE
-                                CONFORMIDAD FINAL</h6>
+                            <h6 style="color: #6d28d9; font-weight: 800; font-size: 11px; margin-bottom: 12px;">FIRMA DEL
+                                SERVIDOR SALIENTE</h6>
                             {% if admin %}
                             <div class="mb-3 text-center" style="font-size: 0.75rem;">
                                 {% if asig_dict.get('servidor_saliente') %}
